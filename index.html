@@ -212,7 +212,7 @@
         PAGE STRUCTURE & ANIMATIONS
         ======================================== */
         .page-wrapper { opacity: 0; }
-
+        
         /* Typography */
         h1, .font-display { font-family: 'Work Sans', sans-serif; font-weight: 900; text-transform: uppercase; }
         .font-mono { font-family: 'Roboto Mono', monospace; }
@@ -298,7 +298,11 @@
         }
 
         /* Sections */
-        .section { padding: 1rem 1.5rem; }
+        .section { 
+            padding: 1rem 1.5rem; 
+            position: relative;
+            z-index: 2;
+        }
         .container { max-width: 1400px; margin: 0 auto; padding: 0 1.5rem; }
 
         /* Hero */
@@ -308,7 +312,7 @@
             align-items: center;
             justify-content: center;
             overflow: hidden;
-            position: relative;
+            z-index: 1; /* Hero is the base layer */
         }
         #hero-canvas {
             position: absolute;
@@ -420,7 +424,13 @@
         }
 
 
-        /* Core Competencies Section */
+        /* Core Competencies & Philosophy Sections (Normal Scroll) */
+        #competencies, #philosophy {
+            height: auto;
+            min-height: 100vh;
+            padding-top: 5rem;
+            padding-bottom: 5rem;
+        }
         #competencies {
             overflow: hidden;
         }
@@ -489,7 +499,13 @@
             to { transform: translateX(-50%); }
         }
 
-        /* Projects Section */
+        /* Projects & Contact Sections (Full Height) */
+        #projects, #contact {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
         #projects {
             padding-bottom: 12rem;
         }
@@ -567,8 +583,6 @@
 
         /* Philosophy Section Redesigned */
         #philosophy {
-            padding: 0;
-            height: 120vh;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -576,6 +590,7 @@
             position: relative;
             background-color: black;
             color: white;
+            overflow: hidden;
         }
 
         .philosophy-marquees-wrapper {
@@ -584,6 +599,7 @@
             left: 0;
             width: 100%;
             z-index: 1;
+            padding-top: 5rem;
         }
 
         .philosophy-title-marquee,
@@ -693,7 +709,7 @@
             background-color: var(--secondary-accent);
             color: black;
         }
-
+        
         /* Custom Alert for Right-Click Protection */
         .custom-alert {
             position: fixed;
@@ -762,7 +778,7 @@
         </header>
 
         <main>
-            <section id="hero" class="hero-section">
+            <section id="hero" class="hero-section section">
                 <canvas id="hero-canvas"></canvas>
                 <div class="hero-content-wrapper">
                     
@@ -807,10 +823,10 @@
             <section id="competencies" class="section bg-secondary-background">
                 <div class="container text-center">
                     <h2 class="font-powergrotesk uppercase text-4xl sm:text-6xl md:text-8xl mb-16" data-glitch-scroll>Core Competencies</h2>
-                </div>
-                <div class="competencies-marquee">
-                    <div id="competencies-inner" class="flex">
+                    <div class="competencies-marquee">
+                        <div id="competencies-inner" class="flex">
                         </div>
+                    </div>
                 </div>
             </section>
             
@@ -1046,9 +1062,9 @@
                 directionalLight.position.set(5, 10, 7.5);
                 philosophyScene.add(directionalLight);
 
-                // --- NEW: Ambient glowing circle effect behind the model ---
+                // --- Ambient glowing circle effect behind the model ---
                 const glowColor = '#035259';
-                const glowGeometry = new THREE.CircleGeometry(5, 64); // A circle geometry is more efficient than a plane for this
+                const glowGeometry = new THREE.CircleGeometry(5, 64);
                 const glowMaterial = new THREE.ShaderMaterial({
                     vertexShader: `
                         varying vec2 vUv;
@@ -1061,10 +1077,8 @@
                         varying vec2 vUv;
                         uniform vec3 color;
                         void main() {
-                            // Create a radial gradient effect
                             float dist = distance(vUv, vec2(0.5));
                             float strength = smoothstep(0.5, 0.0, dist);
-                            // Set the color and fade out with strength
                             gl_FragColor = vec4(color, strength * 0.7);
                         }
                     `,
@@ -1072,13 +1086,13 @@
                         color: { value: new THREE.Color(glowColor) }
                     },
                     transparent: true,
-                    blending: THREE.AdditiveBlending, // Use additive blending for a nice glow effect
-                    depthWrite: false // Prevent sorting issues with the main model
+                    blending: THREE.AdditiveBlending,
+                    depthWrite: false
                 });
 
                 const glowMesh = new THREE.Mesh(glowGeometry, glowMaterial);
-                glowMesh.position.z = -6; // Position it behind the model
-                glowMesh.scale.set(1.5, 1.5, 1.5); // Adjust scale as needed
+                glowMesh.position.z = -6; 
+                glowMesh.scale.set(1.5, 1.5, 1.5);
                 philosophyScene.add(glowMesh);
 
 
@@ -1104,28 +1118,18 @@
             }
             
             // --- Unified Animation Loop ---
-            // This single loop updates Lenis, GSAP, and both Three.js scenes.
-            // This synchronization is key to preventing lag and visual tearing.
             function masterAnimationLoop(time) {
-                // Update Lenis for smooth scrolling
                 lenis.raf(time * 1000);
-
-                // Update time for shaders and animations
                 const elapsedTime = clock.getElapsedTime();
-
-                // Render Hero Scene
                 if (heroRenderer && heroUniforms) {
                     heroUniforms.u_time.value = elapsedTime;
                     heroRenderer.render(heroScene, heroCamera);
                 }
-
-                // Render Philosophy Scene
                 if (philosophyRenderer && philosophyModel) {
                     philosophyModel.rotation.y += 0.003;
                     philosophyRenderer.render(philosophyScene, philosophyCamera);
                 }
             }
-
             gsap.ticker.add(masterAnimationLoop);
             gsap.ticker.lagSmoothing(0);
             lenis.on('scroll', ScrollTrigger.update);
@@ -1135,14 +1139,10 @@
             function onWindowResize() {
                 const width = window.innerWidth;
                 const height = window.innerHeight;
-
-                // Resize Hero Scene
                 if (heroRenderer) {
                     heroRenderer.setSize(width, height);
                     heroUniforms.u_resolution.value.set(width, height);
                 }
-
-                // Resize Philosophy Scene
                 if (philosophyRenderer) {
                     philosophyCamera.aspect = philosophyContainer.clientWidth / philosophyContainer.clientHeight;
                     philosophyCamera.updateProjectionMatrix();
@@ -1158,7 +1158,10 @@
             const pageWrapper = document.querySelector('.page-wrapper');
             
             const loadTl = gsap.timeline({
-                onComplete: () => document.body.classList.add('loaded')
+                onComplete: () => {
+                    document.body.classList.add('loaded');
+                    initScrollAnimations();
+                }
             });
 
             loadTl.to(loadingDiamond, { scale: 1.5, rotation: 45, duration: 0.5, ease: 'power2.inOut' })
@@ -1238,6 +1241,61 @@
                 });
             }
 
+            // --- Main Scroll-Based Animations ---
+            function initScrollAnimations() {
+                // Pin the hero and zoom it in as we scroll
+                ScrollTrigger.create({
+                    trigger: ".hero-section",
+                    start: "top top",
+                    end: "bottom top",
+                    pin: true,
+                    pinSpacing: false,
+                    scrub: 1,
+                    animation: gsap.to(".hero-section", {
+                        scale: 1.5,
+                        autoAlpha: 0, // Fades to black (body background)
+                    }),
+                });
+
+                // Animate all other sections
+                const sections = gsap.utils.toArray("main > .section:not(.hero-section)");
+                sections.forEach(section => {
+                    // Animate the section container
+                    gsap.from(section, {
+                        scrollTrigger: {
+                            trigger: section,
+                            start: "top 80%",
+                            end: "bottom top",
+                            toggleActions: "play none none reverse",
+                        },
+                        autoAlpha: 0,
+                        y: 100,
+                        duration: 1,
+                        ease: "power3.out"
+                    });
+
+                    // Animate the headline within the section
+                    const glitchHeadline = section.querySelector('[data-glitch-scroll]');
+                    if (glitchHeadline) {
+                        gsap.from(glitchHeadline, {
+                            scrollTrigger: {
+                                trigger: section,
+                                start: "top 70%",
+                                toggleActions: "play none none reverse",
+                            },
+                            autoAlpha: 0,
+                            y: 50,
+                            duration: 1,
+                            ease: "power3.out",
+                            onStart: () => gsap.set(glitchHeadline, {visibility: 'visible'})
+                        });
+                    }
+                });
+                
+                // Philosophy Marquee Scroll
+                initPhilosophyMarquee();
+            }
+
             // --- Philosophy Marquee Scroll ---
             function initPhilosophyMarquee() {
                 const philosophySection = document.getElementById('philosophy');
@@ -1246,29 +1304,37 @@
                 const marquee = philosophySection.querySelector('.philosophy-title-marquee-inner');
                 gsap.to(marquee, {
                     xPercent: -50, ease: 'none',
-                    scrollTrigger: { trigger: philosophySection, start: "top bottom", end: "bottom top", scrub: 0.5 }
+                    scrollTrigger: { 
+                        trigger: philosophySection, 
+                        start: "top bottom", 
+                        end: "bottom top", 
+                        scrub: 0.5,
+                    }
                 });
 
                 const subtitleMarquee = philosophySection.querySelector('.philosophy-subtitle-marquee-inner');
                 gsap.set(subtitleMarquee, {xPercent: -50});
                 gsap.to(subtitleMarquee, {
                     xPercent: 0, ease: 'none',
-                    scrollTrigger: { trigger: philosophySection, start: "top bottom", end: "bottom top", scrub: 0.5 }
+                    scrollTrigger: { 
+                        trigger: philosophySection, 
+                        start: "top bottom", 
+                        end: "bottom top", 
+                        scrub: 0.5,
+                    }
                 });
             }
 
-            // --- Header and Hero Animations ---
+            // --- Header Animations ---
             const header = document.querySelector('header');
             const headerInner = document.querySelector('#header-inner');
             gsap.set(header, { yPercent: -100, autoAlpha: 0 });
-
-            gsap.to(['#hero-canvas', '.hero-content-wrapper'], {
-              autoAlpha: 0,
-              scrollTrigger: { trigger: '#hero', start: 'top top', end: '60% top', scrub: true }
-            });
             
+            // Show header after the hero section is passed
             ScrollTrigger.create({
-                trigger: '#hero', start: 'bottom top',
+                trigger: "#competencies",
+                start: "top 80%",
+                end: "bottom top",
                 onEnter: () => gsap.to(header, {yPercent: 0, autoAlpha: 1, duration: 0.8, ease: 'power3.out'}),
                 onLeaveBack: () => gsap.to(header, {yPercent: -100, autoAlpha: 0, duration: 0.8, ease: 'power3.in'}),
             });
@@ -1284,14 +1350,6 @@
 
             header.addEventListener('mouseleave', () => {
                 gsap.to(headerInner, { x: 0, y: 0, duration: 0.5, ease: 'elastic.out(1, 0.3)' });
-            });
-            
-            // --- Animate Headlines on Scroll ---
-            document.querySelectorAll('[data-glitch-scroll]').forEach(el => {
-                gsap.from(el, {
-                    y: 30, autoAlpha: 0, duration: 1, ease: 'power3.out',
-                    scrollTrigger: { trigger: el, start: 'top 90%', toggleActions: 'play none none reverse' }
-                });
             });
             
             // --- Interactive Arrow Grid ---
@@ -1414,7 +1472,6 @@
             initHeroScene();
             initPhilosophyScene();
             initHeroInteractions();
-            initPhilosophyMarquee();
             populateProjectCards();
             initializeGlobalCursorInteractions();
             onWindowResize(); // Set initial sizes
@@ -1422,4 +1479,3 @@
     </script>
 </body>
 </html>
-
