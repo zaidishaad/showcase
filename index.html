@@ -1,0 +1,1419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZAID ISHAAD — Digital Creative</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- GSAP & Helper Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="https://unpkg.com/split-type"></script>
+    
+    <!-- Lenis Smooth Scroll -->
+    <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.23/bundled/lenis.min.js"></script>
+    
+    <!-- three.js for WebGL -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.module.js",
+                "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.128.0/examples/jsm/"
+            }
+        }
+    </script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&family=Work+Sans:wght@400;700;900&family=Patua+One&family=Reem+Kufi&family=Righteous&family=Mrs+Saint+Delafield&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+
+
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Material Icons for Bold Arrows -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Icons+Sharp" rel="stylesheet">
+
+
+    <style>
+        /* ========================================
+        SETUP & THEME
+        ======================================== */
+        @font-face {
+            font-family: 'HaloGrotesk';
+            src: url('https://ik.imagekit.io/04vozxryh/HaloGrotesk-Regular.otf?updatedAt=1751123793043') format('opentype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'SageGrotesk';
+            src: url('https://ik.imagekit.io/04vozxryh/Sage%20Grotesk.otf?updatedAt=1751124666565') format('opentype');
+            font-weight: normal;
+            font-style: normal;
+        }
+        
+        @font-face {
+            font-family: 'Liria';
+            src: url('https://ik.imagekit.io/04vozxryh/Liria-Italic.otf?updatedAt=1751126209671') format('opentype');
+            font-weight: normal;
+            font-style: italic;
+        }
+        
+        @font-face {
+            font-family: 'Popfine';
+            src: url('https://ik.imagekit.io/04vozxryh/POPFINE%20Regular.otf?updatedAt=1751126697759') format('opentype');
+            font-weight: normal;
+            font-style: normal;
+        }
+        
+        @font-face {
+            font-family: 'VivlRail';
+            src: url('https://ik.imagekit.io/04vozxryh/vivl-rail.otf?updatedAt=1751130452076') format('opentype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'LensGrotesk';
+            src: url('https://ik.imagekit.io/04vozxryh/LensGrotesk-Medium.otf?updatedAt=1751305272069') format('opentype');
+            font-weight: 500;
+            font-style: normal;
+        }
+        
+        @font-face {
+            font-family: 'Peghas';
+            src: url('https://ik.imagekit.io/04vozxryh/peghas.otf?updatedAt=1751305200539') format('opentype');
+        }
+
+        @font-face {
+            font-family: 'PowerGrotesk';
+            src: url('https://ik.imagekit.io/04vozxryh/PowerGrotesk-Heavy.otf?updatedAt=1751474105674') format('opentype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'PowerGrotesk-Bold';
+            src: url('https://ik.imagekit.io/04vozxryh/PowerGrotesk-Bold.otf?updatedAt=1751484040064') format('opentype');
+            font-weight: bold;
+            font-style: normal;
+        }
+
+        :root {
+            --primary-background: #000000;
+            --secondary-background: #1A1A1D;
+            --primary-accent: #0052FF; /* Blue */
+            --secondary-accent: #FFD600; /* Yellow */
+            --text-primary: #F5F5F5;
+            --text-secondary: #A9A9A9;
+            --border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* ========================================
+        BASE & RESET
+        ======================================== */
+        *, *::before, *::after { box-sizing: border-box; }
+        html.lenis { height: auto; }
+        .lenis.lenis-smooth { scroll-behavior: auto; }
+        .lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+        .lenis.lenis-stopped { overflow: hidden; }
+
+        body {
+            margin: 0;
+            background-color: var(--primary-background);
+            font-family: 'Work Sans', sans-serif;
+            color: var(--text-primary);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            overflow-x: hidden;
+            cursor: none;
+        }
+        
+        /* ========================================
+        CUSTOM CURSOR
+        ======================================== */
+        .cursor {
+            position: fixed;
+            pointer-events: none;
+            z-index: 11000;
+            transform: translate(-50%, -50%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .cursor-shape {
+            width: 12px;
+            height: 12px;
+            background-color: var(--primary-accent);
+            border-radius: 50%;
+            transition: transform 0.4s ease, background-color 0.4s ease, border 0.4s ease;
+            will-change: transform;
+            position: absolute;
+        }
+        .cursor-text {
+            position: relative;
+            z-index: 1;
+            font-family: 'HaloGrotesk', sans-serif;
+            font-size: 14px;
+            text-align: center;
+            line-height: 1.2;
+            color: var(--primary-background);
+            opacity: 0;
+            white-space: nowrap;
+            transition: opacity 0.4s ease;
+            will-change: opacity;
+        }
+
+        body.cursor-hover .cursor-shape {
+            transform: scale(2.5);
+            background-color: var(--secondary-accent);
+        }
+
+        body.cursor-project-hover .cursor-shape {
+            transform: scale(8);
+            background-color: var(--secondary-accent);
+        }
+
+        body.cursor-project-hover .cursor-text {
+            opacity: 1;
+        }
+        
+        body.cursor-project-hover.cursor-hover .cursor-shape {
+             background-color: var(--secondary-accent);
+        }
+
+
+        /* ========================================
+        LOADING SCREEN & TRANSITIONS
+        ======================================== */
+        .loading-screen {
+            position: fixed;
+            inset: 0;
+            background-color: var(--primary-background);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            pointer-events: none;
+        }
+        .loading-diamond {
+            width: 30px;
+            height: 30px;
+            background-color: var(--primary-accent);
+            clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+            will-change: transform, opacity;
+        }
+        
+        /* ========================================
+        PAGE STRUCTURE & ANIMATIONS
+        ======================================== */
+        .page-wrapper { opacity: 0; will-change: opacity; }
+
+        /* Typography */
+        h1, .font-display { font-family: 'Work Sans', sans-serif; font-weight: 900; text-transform: uppercase; }
+        .font-mono { font-family: 'Roboto Mono', monospace; }
+        .font-instrument-serif { font-family: 'Instrument Serif', serif; }
+        .font-halogrotesk { font-family: 'HaloGrotesk', sans-serif; }
+        .font-sagegrotesk { font-family: 'SageGrotesk', sans-serif; }
+        .font-popfine { font-family: 'Popfine', sans-serif; }
+        .font-vivlrail { font-family: 'VivlRail', sans-serif; }
+        .font-lensgrotesk { font-family: 'LensGrotesk', sans-serif; }
+        .font-peghas { font-family: 'Peghas', sans-serif; }
+        .font-powergrotesk { font-family: 'PowerGrotesk', sans-serif; }
+        
+        .hero-headline, .hero-element, .project-card, [data-glitch-scroll] { visibility: hidden; }
+
+        /* Header */
+        header { 
+            position: fixed; 
+            top: 1rem; 
+            left: 1rem; 
+            right: 1rem;
+            z-index: 100;
+            will-change: transform, opacity;
+        }
+        .header-inner {
+            background: rgba(45, 45, 50, 0.5);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: border-color 0.4s ease;
+            transform-origin: center;
+            will-change: transform;
+            padding: 0.75rem 2rem;
+            border-radius: 9999px;
+        }
+        
+        .nav-link, .nav-link-button {
+            font-family: 'Liria', serif;
+            font-size: 1.2rem;
+            letter-spacing: 0.02em;
+            color: var(--text-primary);
+            transition: color 0.3s ease;
+            position: relative;
+            padding-bottom: 5px;
+        }
+        
+        .nav-link::before, .nav-link-button::before {
+            content: '★';
+            position: absolute;
+            left: -1.2em;
+            top: 50%;
+            transform: translateY(-50%) translateY(-2.5px);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            color: var(--secondary-accent);
+        }
+        
+        .nav-link::after, .nav-link-button::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 1px;
+            bottom: 0;
+            left: 0;
+            background-color: var(--secondary-accent);
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover, .nav-link-button:hover {
+             color: var(--secondary-accent);
+        }
+        .nav-link:hover::before, .nav-link-button:hover::before {
+            opacity: 1;
+        }
+        .nav-link:hover::after, .nav-link-button:hover::after {
+            width: 100%;
+        }
+        
+        .nav-link-button {
+            border: none;
+            padding-bottom: 5px;
+        }
+        .nav-link-button:hover {
+            background-color: transparent;
+        }
+
+        /* Sections */
+        .section { padding: 4rem 1.5rem; }
+        .section-separator { border-bottom: 1px solid var(--border-color); }
+        .container { max-width: 1400px; margin: 0 auto; padding: 0 1.5rem; }
+
+        /* Hero */
+        .hero-section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+        #hero-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+        .hero-content-wrapper {
+             z-index: 2;
+             position: absolute;
+             inset: 5rem;
+             display: grid;
+             grid-template-columns: 1fr auto;
+             grid-template-rows: 1fr auto;
+             align-items: start;
+             will-change: opacity;
+        }
+        
+
+        .main-headline { 
+            grid-column: 1 / 2;
+            grid-row: 1 / 2;
+            text-align: left;
+            align-self: center;
+        }
+
+        .hero-title { 
+            font-size: clamp(4.5rem, 15vw, 10rem); 
+            line-height: 0.9;
+            font-weight: 400;
+            text-transform: none;
+        }
+        .hero-subtitle {
+            font-size: clamp(1rem, 3vw, 1.5rem);
+            letter-spacing: 0.5em;
+            text-transform: uppercase;
+            margin-top: 1.5rem;
+        }
+        
+        .top-right-content {
+            grid-column: 2 / 3;
+            grid-row: 1 / 2;
+            justify-self: end;
+            align-self: start;
+        }
+
+        .bottom-right-content {
+            grid-column: 2 / 3;
+            grid-row: 2 / 3;
+            justify-self: end;
+            align-self: end;
+            text-align: right;
+        }
+        
+        .bottom-left-content {
+            grid-column: 1 / 2;
+            grid-row: 2 / 3;
+            align-self: end;
+        }
+
+        .social-icons {
+            margin-top: 1.5rem;
+        }
+        .social-icons a {
+             font-size: 1.75rem;
+        }
+
+        .my-cv-bar {
+            border: 1px solid var(--text-primary);
+            border-radius: 9999px;
+            padding: 0.75rem 2rem;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            display: inline-block;
+            margin-top: 1.5rem;
+        }
+        .my-cv-bar:hover {
+            background-color: var(--text-primary);
+            color: var(--primary-background);
+        }
+        
+        .scroll-prompt {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            font-family: 'Roboto Mono', monospace;
+            color: var(--text-secondary);
+        }
+
+        .scroll-prompt svg {
+            width: 24px;
+            height: 24px;
+            margin: 0.5rem auto 0;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+
+
+        /* Core Competencies Section */
+        #competencies {
+            overflow: hidden;
+        }
+        .competencies-marquee {
+            display: flex;
+            width: max-content;
+        }
+        .competency-item {
+            flex-shrink: 0;
+            width: 300px; /* Smaller width for mobile */
+            padding: 1.5rem;
+            margin: 0 0.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
+            background: rgba(26, 26, 29, 0.5);
+        }
+         @media (min-width: 768px) {
+             .competency-item {
+                 width: 400px;
+                 padding: 2rem;
+                 margin: 0 1rem;
+             }
+         }
+
+        @keyframes continuous-slide {
+            from { transform: translateX(0); }
+            to { transform: translateX(-50%); }
+        }
+
+        /* Projects Section */
+        #projects {
+            padding-bottom: 12rem;
+        }
+
+        #projects-grid {
+            display: grid;
+            grid-template-columns: repeat(1, 1fr);
+            gap: 1.5rem;
+        }
+        @media (min-width: 768px) {
+            #projects-grid {
+                grid-template-columns: repeat(2, 1fr);
+                 gap: 2rem;
+            }
+        }
+        @media (min-width: 1024px) {
+            #projects-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .project-card {
+            border-radius: 1.5rem;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            will-change: transform, opacity;
+            transform-style: preserve-3d; /* For 3D tilt effect */
+        }
+
+        .project-card:hover {
+            transform: translateY(-15px) scale(1.05); /* Enhanced floating effect */
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+        }
+        .project-card-blurry-bg {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-size: cover;
+            background-position: center;
+            filter: blur(15px) brightness(0.6);
+            transform: scale(1.1);
+            transition: filter 0.4s ease;
+            z-index: 1;
+        }
+        .project-card:hover .project-card-blurry-bg {
+            filter: blur(10px) brightness(1.1); /* Lighten effect on hover */
+        }
+        .project-card-content {
+            position: relative;
+            z-index: 2;
+            color: white;
+            text-align: center;
+        }
+        .project-card-image {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            margin-bottom: 1.5rem;
+            transition: transform 0.4s ease;
+            will-change: transform;
+        }
+        .project-card:hover .project-card-image {
+            transform: scale(1.05);
+        }
+        .project-card-image img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+        }
+
+        /* Philosophy Section Redesigned */
+        #philosophy {
+            padding: 0;
+            height: 120vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            background-color: black;
+            color: white;
+        }
+
+        .philosophy-marquees-wrapper {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1;
+        }
+
+        .philosophy-title-marquee,
+        .philosophy-subtitle-marquee {
+            overflow: hidden;
+            width: 100%;
+        }
+
+        .philosophy-subtitle-marquee {
+            margin-top: -8rem; /* Adjust this value to control spacing */
+        }
+
+        .philosophy-title-marquee-inner,
+        .philosophy-subtitle-marquee-inner {
+            display: flex;
+            width: max-content;
+        }
+
+        .philosophy-title-marquee h2 {
+            font-family: 'Peghas', sans-serif;
+            font-size: clamp(8rem, 25vw, 20rem);
+            font-weight: bold;
+            text-transform: uppercase;
+            padding-right: 2rem;
+            will-change: transform;
+            flex-shrink: 0;
+            white-space: nowrap;
+            color: #c0f984;
+        }
+
+        .philosophy-subtitle-marquee h3 {
+            font-family: 'PowerGrotesk-Bold', sans-serif;
+            font-size: clamp(2rem, 6vw, 4rem);
+            font-weight: bold;
+            text-transform: uppercase;
+            padding-right: 1rem;
+            will-change: transform;
+            flex-shrink: 0;
+            white-space: nowrap;
+            color: #4331FF;
+        }
+
+        #philosophy-canvas-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+        }
+        #philosophy-canvas {
+            width: 100%;
+            height: 100%;
+        }
+
+        .philosophy-bottom-content {
+            position: absolute;
+            bottom: 2rem;
+            left: 0;
+            right: 0;
+            z-index: 3;
+            padding: 0 2rem;
+        }
+
+        .philosophy-description-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto 2rem;
+        }
+
+        .philosophy-description {
+            font-family: 'LensGrotesk', sans-serif;
+            font-size: clamp(0.9rem, 1.5vw, 1.1rem);
+            line-height: 1.6;
+            font-weight: 300; /* Lighter font weight */
+            opacity: 0.7; /* Slightly more transparent */
+        }
+
+        .philosophy-description.left {
+            text-align: left;
+        }
+        
+        .philosophy-description.right {
+            text-align: right;
+        }
+
+        .book-project-bar {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 9999px;
+            padding: 1rem 2rem;
+            font-family: 'HaloGrotesk', sans-serif;
+            font-size: 1.2rem;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 1rem;
+        }
+        .book-project-bar:hover {
+            background-color: var(--secondary-accent);
+            color: black;
+        }
+
+        /* Custom Alert for Right-Click Protection */
+        .custom-alert {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(26, 26, 29, 0.9);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            color: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            border: 1px solid var(--border-color);
+            z-index: 12000;
+            text-align: center;
+            display: none; /* Hidden by default */
+            font-family: 'LensGrotesk', sans-serif;
+            max-width: 90%;
+            width: 400px;
+        }
+        .custom-alert-message {
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+        .custom-alert-close {
+            background-color: var(--secondary-accent);
+            color: black;
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 9999px;
+            cursor: pointer;
+            font-family: 'HaloGrotesk', sans-serif;
+            transition: background-color 0.3s ease;
+        }
+        .custom-alert-close:hover {
+            background-color: #ffd600b3;
+        }
+    </style>
+</head>
+<body>
+    <div id="custom-alert" class="custom-alert">
+        <p class="custom-alert-message">View Page Source has been disabled on this site to protect its content and structure.</p>
+        <button id="custom-alert-close" class="custom-alert-close cursor-target">OK</button>
+    </div>
+    
+    <div class="cursor">
+        <div class="cursor-shape"></div>
+        <div class="cursor-text">OPEN<br>PROJECT</div>
+    </div>
+
+    <div class="page-wrapper">
+        <header>
+             <div id="header-inner" class="header-inner">
+                <div class="container flex justify-between items-center">
+                    <img id="header-logo" src="https://ik.imagekit.io/04vozxryh/LogoW.png?updatedAt=1751144946426" alt="Zaid Ishaad Logo" class="h-6 w-auto">
+                    <nav class="hidden md:flex items-center space-x-8 text-sm uppercase">
+                        <a href="#hero" class="nav-link cursor-target">Home</a>
+                        <a href="#projects" class="nav-link cursor-target">Projects</a>
+                        <a href="#contact" class="nav-link-button cursor-target">Let's Talk</a>
+                    </nav>
+                     <button class="md:hidden text-2xl" id="mobile-menu-btn">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <section id="hero" class="hero-section section-separator">
+                <canvas id="hero-canvas"></canvas>
+                <div class="hero-content-wrapper">
+                    
+                    <div class="main-headline hero-headline">
+                        <div>
+                            <h1 class="hero-title font-vivlrail">ZAID<br>ISHAAD</h1>
+                            <h2 class="hero-subtitle font-vivlrail">THE SHOWCASE</h2>
+                        </div>
+                    </div>
+
+                    <div class="top-right-content hero-element">
+                    </div>
+
+                    <div class="bottom-left-content hero-element">
+                         <div class="social-icons flex items-center space-x-6">
+                            <a href="#" class="text-2xl text-text-secondary hover:text-white transition-colors duration-300 cursor-target" data-color="#002060"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#" class="text-2xl text-text-secondary hover:text-white transition-colors duration-300 cursor-target" data-color="#5A0F61"><i class="fab fa-instagram"></i></a>
+                            <a href="#" class="text-2xl text-text-secondary hover:text-white transition-colors duration-300 cursor-target" data-color="#01689C"><i class="fab fa-linkedin-in"></i></a>
+                            <a href="#" class="text-2xl text-text-secondary hover:text-white transition-colors duration-300 cursor-target" data-color="#00AD6F"><i class="fab fa-whatsapp"></i></a>
+                        </div>
+                         <a href="https://ik.imagekit.io/04vozxryh/MYCV2.pdf?updatedAt=1751122326346" target="_blank" download="Zaid_Ishaad_CV.pdf" class="my-cv-bar font-vivlrail uppercase tracking-widest text-sm cursor-target">
+                            My CV
+                        </a>
+                    </div>
+                    
+                    <div class="bottom-right-content hero-element">
+                        <img src="https://ik.imagekit.io/04vozxryh/LogoW.png?updatedAt=1751144946426" alt="Zaid Ishaad Logo" class="w-32 h-auto ml-auto mb-4">
+                        <p class="font-lensgrotesk text-lg md:text-xl text-text-secondary max-w-sm">
+                           A passionate digital creative specializing in graphics design, video editing, and crafting interactive web experiences.
+                        </p>
+                    </div>
+
+                    <div class="scroll-prompt hero-element">
+                        <span>Scroll to view</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                        </svg>
+                    </div>
+                </div>
+            </section>
+
+            <section id="competencies" class="section bg-secondary-background section-separator">
+                <div class="container text-center">
+                    <h2 class="font-powergrotesk uppercase text-4xl sm:text-6xl md:text-8xl mb-16" data-glitch-scroll>Core Competencies</h2>
+                </div>
+                <div class="competencies-marquee">
+                    <div id="competencies-inner" class="flex">
+                        </div>
+                </div>
+            </section>
+            
+            <section id="philosophy" class="section section-separator">
+                <div class="philosophy-marquees-wrapper">
+                    <div class="philosophy-title-marquee">
+                        <div class="philosophy-title-marquee-inner">
+                            <h2 class="font-peghas">From Idea to Impact •&nbsp;</h2>
+                            <h2 class="font-peghas">From Idea to Impact •&nbsp;</h2>
+                            <h2 class="font-peghas">From Idea to Impact •&nbsp;</h2>
+                            <h2 class="font-peghas">From Idea to Impact •&nbsp;</h2>
+                            <h2 class="font-peghas">From Idea to Impact •&nbsp;</h2>
+                            <!-- Duplicate for seamless loop -->
+                            <h2 class="font-peghas">From Idea to Impact •&nbsp;</h2>
+                            <h2 class="font-peghas">From Idea to Impact •&nbsp;</h2>
+                            <h2 class="font-peghas">From Idea to Impact •&nbsp;</h2>
+                            <h2 class="font-peghas">From Idea to Impact •&nbsp;</h2>
+                            <h2 class="font-peghas">From Idea to Impact •&nbsp;</h2>
+                        </div>
+                    </div>
+                    <div class="philosophy-subtitle-marquee">
+                        <div class="philosophy-subtitle-marquee-inner">
+                            <h3>WELCOME TO ZAID'S SHOWCASE •&nbsp;</h3>
+                            <h3>WELCOME TO ZAID'S SHOWCASE •&nbsp;</h3>
+                            <h3>WELCOME TO ZAID'S SHOWCASE •&nbsp;</h3>
+                            <h3>WELCOME TO ZAID'S SHOWCASE •&nbsp;</h3>
+                            <!-- Duplicate for seamless loop -->
+                            <h3>WELCOME TO ZAID'S SHOWCASE •&nbsp;</h3>
+                            <h3>WELCOME TO ZAID'S SHOWCASE •&nbsp;</h3>
+                            <h3>WELCOME TO ZAID'S SHOWCASE •&nbsp;</h3>
+                            <h3>WELCOME TO ZAID'S SHOWCASE •&nbsp;</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="philosophy-canvas-container">
+                    <canvas id="philosophy-canvas"></canvas>
+                </div>
+                <div class="philosophy-bottom-content">
+                    <div class="philosophy-description-grid">
+                        <p class="philosophy-description left">
+                            My process is rooted in a deep understanding<br>of your goals. I analyze your needs and<br>develop a clear strategy.
+                        </p>
+                        <div class="flex flex-col items-end">
+                            <p class="philosophy-description right">
+                                This ensures the final product<br>is not just beautiful, but highly effective<br>and purpose-driven.
+                            </p>
+                            <button class="book-project-bar cursor-target">BOOK A PROJECT</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="projects" class="section bg-secondary-background section-separator">
+                <div class="container">
+                    <h2 class="font-powergrotesk uppercase text-4xl sm:text-6xl md:text-8xl mb-16 text-center" data-glitch-scroll>Projects</h2>
+                     <div id="projects-grid">
+                        </div>
+                </div>
+            </section>
+
+             <section id="contact" class="section text-center">
+                <div class="container">
+                    <h2 class="font-sagegrotesk text-5xl sm:text-7xl md:text-9xl" data-glitch-scroll>LET'S CREATE TOGETHER</h2>
+                    <a href="mailto:contact@zaadishaad.com" class="font-mono text-lg md:text-2xl mt-8 inline-block cursor-target text-secondary-accent hover:text-white transition-colors" data-glitch-scroll>contact@zaadishaad.com</a>
+                </div>
+                <div id="arrow-grid" class="mt-12 md:mt-20 container grid grid-cols-5 sm:grid-cols-10 gap-2">
+                    </div>
+            </section>
+        </main>
+    </div>
+    
+    <script type="x-shader/x-vertex" id="vertexShader">
+        void main() {
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+    </script>
+    
+    <script type="x-shader/x-fragment" id="fragmentShader">
+        uniform vec2 u_resolution;
+        uniform float u_time;
+        uniform vec2 u_mouse;
+        uniform vec3 u_hover_color;
+        uniform float u_hover_mix;
+
+
+        // 2D Random
+        float random(vec2 st) {
+            return fract(sin(dot(st.xy, vec2(12.9898, 78.233))) * 43758.5453123);
+        }
+
+        // 2D Noise
+        float noise(vec2 st) {
+            vec2 i = floor(st);
+            vec2 f = fract(st);
+
+            float a = random(i);
+            float b = random(i + vec2(1.0, 0.0));
+            float c = random(i + vec2(0.0, 1.0));
+            float d = random(i + vec2(1.0, 1.0));
+
+            vec2 u = f * f * (3.0 - 2.0 * f);
+            return mix(a, b, u.x) + (c - a) * u.y * (1.0 - u.x) + (d - b) * u.x * u.y;
+        }
+        
+        // God Rays / Volumetric Light
+        const int NUM_SAMPLES = 25;
+        float god_rays(vec2 st, vec2 light_pos) {
+            float illumination = 0.0;
+            float decay = 0.95;
+            float density = 0.9;
+            float weight = 0.1;
+            
+            vec2 delta = (light_pos - st) / float(NUM_SAMPLES);
+            
+            for(int i=0; i < NUM_SAMPLES; i++) {
+                st += delta;
+                float n = noise(st * 3.0 + u_time * 0.1);
+                float sample_illumination = smoothstep(0.7, 0.8, n);
+                sample_illumination *= density * weight;
+                illumination += sample_illumination;
+                weight *= decay;
+            }
+            
+            return illumination;
+        }
+
+        void main() {
+            vec2 st = gl_FragCoord.xy / u_resolution.xy;
+            st.x *= u_resolution.x / u_resolution.y;
+
+            // Fluid noise calculation
+            float n = noise(st * 2.0 + u_time * 0.1);
+
+            // Color palette
+            vec3 color_dark = vec3(0.1, 0.05, 0.4);       // Dark Blue
+            vec3 color_mid = vec3(0.263, 0.192, 1.0);     // #4331FF
+            vec3 color_light = vec3(0.753, 0.976, 0.518); // #c0f984
+
+            // Base fluid color
+            vec3 base_color = mix(color_dark, color_mid, smoothstep(0.3, 0.6, n));
+            base_color = mix(base_color, color_light, smoothstep(0.7, 0.8, n));
+            
+            // Light position follows mouse
+            vec2 light_position = u_mouse / u_resolution.xy;
+            light_position.x *= u_resolution.x / u_resolution.y;
+            light_position.y = 1.0 - light_position.y; // Invert Y for shader space
+
+            // Calculate and add god rays
+            float rays = god_rays(st, light_position);
+            base_color += rays * color_light * 0.8;
+
+            // Screen blend mode for overlay effect
+            vec3 screen_color = 1.0 - (1.0 - base_color) * (1.0 - u_hover_color);
+            vec3 final_color = mix(base_color, screen_color, u_hover_mix);
+
+            // Add film grain and darken for text visibility
+            float grain = random(st * 2.0 + u_time) * 0.2; // Increase noise effect
+            final_color -= grain; // Subtracting grain can look better than adding
+            final_color *= 0.75; // Darken the scene to make text more readable
+
+            gl_FragColor = vec4(final_color, 1.0);
+        }
+    </script>
+
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            gsap.registerPlugin(ScrollTrigger);
+            
+            const lenis = new Lenis({ lerp: 0.08, wheelMultiplier: 0.7 });
+            function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
+            requestAnimationFrame(raf);
+
+            const loadingScreen = document.querySelector('.loading-screen');
+            const loadingDiamond = document.querySelector('.loading-diamond');
+            const pageWrapper = document.querySelector('.page-wrapper');
+            const header = document.querySelector('header');
+            const headerInner = document.querySelector('#header-inner');
+            
+            // --- Page Load Animation ---
+            const loadTl = gsap.timeline({
+                onComplete: () => document.body.classList.add('loaded')
+            });
+
+            loadTl.to(loadingDiamond, { scale: 1.5, rotation: 45, duration: 0.5, ease: 'power2.inOut' })
+                  .to(loadingDiamond, { scale: 1, rotation: 90, duration: 0.5, ease: 'power2.inOut' })
+                  .to(loadingDiamond, { opacity: 0, scale: 3, duration: 0.5, ease: 'power2.in' }, "+=0.2")
+                  .to(loadingScreen, { opacity: 0, duration: 0.5, onComplete: () => {
+                      if (loadingScreen) {
+                          loadingScreen.style.display = 'none';
+                      }
+                  } }, "-=0.2")
+                  .to(pageWrapper, { opacity: 1, duration: 0.1 }, "-=0.5")
+                  .from('.hero-headline', {
+                      y: '50%',
+                      opacity: 0,
+                      ease: 'power4.out',
+                      duration: 1.5,
+                      onStart: () => gsap.set('.hero-headline', {visibility: 'visible'})
+                  }, "-=0.8")
+                  .from('.hero-element', {
+                      y: 20,
+                      opacity: 0,
+                      stagger: 0.2,
+                      ease: 'power4.out',
+                      duration: 1,
+                      onStart: () => gsap.set('.hero-element', {visibility: 'visible'})
+                  }, "-=1");
+                  
+            // --- Custom Cursor ---
+            const cursor = document.querySelector('.cursor');
+            window.addEventListener('mousemove', e => {
+                gsap.to(cursor, { duration: 0.4, x: e.clientX, y: e.clientY, ease: 'power3.out' });
+            });
+            
+            function initializeGlobalCursorInteractions() {
+                document.body.addEventListener('mouseover', (e) => {
+                    if (e.target.closest('a, button, .cursor-target')) {
+                        document.body.classList.add('cursor-hover');
+                    }
+                     if (e.target.closest('.project-card')) {
+                        document.body.classList.add('cursor-project-hover');
+                    }
+                });
+                document.body.addEventListener('mouseout', (e) => {
+                    if (e.target.closest('a, button, .cursor-target')) {
+                        document.body.classList.remove('cursor-hover');
+                    }
+                    if (e.target.closest('.project-card')) {
+                        document.body.classList.remove('cursor-project-hover');
+                    }
+                });
+            }
+
+
+            // --- Fluid background animation ---
+            const heroCanvas = document.getElementById('hero-canvas');
+            if(heroCanvas) {
+                const scene = new THREE.Scene();
+                const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+                const renderer = new THREE.WebGLRenderer({ canvas: heroCanvas });
+
+                const uniforms = {
+                    u_time: { value: 0.0 },
+                    u_resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
+                    u_mouse: { value: new THREE.Vector2(window.innerWidth / 2, window.innerHeight / 2) },
+                    u_hover_color: { value: new THREE.Color(0x000000) },
+                    u_hover_mix: { value: 0.0 }
+                };
+                
+                window.addEventListener('mousemove', (event) => {
+                    uniforms.u_mouse.value.set(event.clientX, event.clientY);
+                });
+
+                const geometry = new THREE.PlaneGeometry(2, 2);
+                const material = new THREE.ShaderMaterial({
+                    uniforms: uniforms,
+                    vertexShader: document.getElementById('vertexShader').textContent,
+                    fragmentShader: document.getElementById('fragmentShader').textContent
+                });
+
+                const mesh = new THREE.Mesh(geometry, material);
+                scene.add(mesh);
+
+                const clock = new THREE.Clock();
+
+                function animate() {
+                    requestAnimationFrame(animate);
+                    uniforms.u_time.value = clock.getElapsedTime();
+                    renderer.render(scene, camera);
+                }
+
+                function onWindowResize() {
+                    const width = window.innerWidth;
+                    const height = window.innerHeight;
+                    renderer.setSize(width, height);
+                    uniforms.u_resolution.value.set(width, height);
+                }
+                
+                window.addEventListener('resize', onWindowResize, false);
+                onWindowResize();
+                animate();
+                
+                const socialIcons = document.querySelectorAll('.social-icons a');
+                const socialIconsContainer = document.querySelector('.social-icons');
+                
+                socialIcons.forEach(icon => {
+                    icon.addEventListener('mouseenter', () => {
+                        const color = new THREE.Color(icon.dataset.color);
+                        gsap.to(uniforms.u_hover_color.value, {
+                            r: color.r,
+                            g: color.g,
+                            b: color.b,
+                            duration: 0.5,
+                            ease: 'power2.out'
+                        });
+                    });
+                });
+
+                socialIconsContainer.addEventListener('mouseenter', () => {
+                     gsap.to(uniforms.u_hover_mix, {
+                        value: 1.0,
+                        duration: 0.5,
+                        ease: 'power2.out'
+                    });
+                });
+
+                socialIconsContainer.addEventListener('mouseleave', () => {
+                    gsap.to(uniforms.u_hover_mix, {
+                        value: 0.0,
+                        duration: 0.5,
+                        ease: 'power2.out'
+                    });
+                });
+            }
+
+            // --- Philosophy Section Logic ---
+            const philosophySection = document.getElementById('philosophy');
+            if(philosophySection) {
+                const marquee = philosophySection.querySelector('.philosophy-title-marquee-inner');
+                gsap.to(marquee, {
+                    xPercent: -50,
+                    ease: 'none',
+                    scrollTrigger: {
+                        trigger: philosophySection,
+                        start: "top bottom",
+                        end: "bottom top",
+                        scrub: 0.5
+                    }
+                });
+
+                const subtitleMarquee = philosophySection.querySelector('.philosophy-subtitle-marquee-inner');
+                // Set the initial position so the second half is visible
+                gsap.set(subtitleMarquee, {xPercent: -50});
+                // Animate it back to 0, revealing the first half and creating a rightward scroll
+                gsap.to(subtitleMarquee, {
+                    xPercent: 0,
+                    ease: 'none',
+                    scrollTrigger: {
+                        trigger: philosophySection,
+                        start: "top bottom",
+                        end: "bottom top",
+                        scrub: 0.5
+                    }
+                });
+
+                const philosophyCanvas = document.getElementById('philosophy-canvas');
+                const container = document.getElementById('philosophy-canvas-container');
+                const scene = new THREE.Scene();
+                const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+                
+                const renderer = new THREE.WebGLRenderer({ canvas: philosophyCanvas, alpha: true });
+                renderer.setSize(container.clientWidth, container.clientHeight);
+                renderer.setPixelRatio(window.devicePixelRatio);
+
+                const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+                scene.add(ambientLight);
+                const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+                directionalLight.position.set(5, 10, 7.5);
+                scene.add(directionalLight);
+
+                const loader = new GLTFLoader();
+                let model;
+                loader.load(
+                    'https://ik.imagekit.io/04vozxryh/Create_a_high_resolut_0630162924_texture.glb?updatedAt=1751301047399',
+                    function (gltf) {
+                        model = gltf.scene;
+                        
+                        const box = new THREE.Box3().setFromObject(model);
+                        const size = box.getSize(new THREE.Vector3());
+                        const center = box.getCenter(new THREE.Vector3());
+                        
+                        model.position.sub(center); 
+
+                        const maxDim = Math.max(size.x, size.y, size.z);
+                        const fov = camera.fov * (Math.PI / 180);
+                        let cameraZ = Math.abs(maxDim / 2 / Math.tan(fov / 2));
+                        cameraZ *= 1.2;
+                        camera.position.z = cameraZ;
+                        
+                        scene.add(model);
+                    },
+                    undefined,
+                    function (error) { console.error(error); }
+                );
+                
+                function animatePhilosophyModel() {
+                    requestAnimationFrame(animatePhilosophyModel);
+                    if (model) {
+                        model.rotation.y += 0.003; 
+                    }
+                    renderer.render(scene, camera);
+                }
+
+                function onPhilosophyCanvasResize() {
+                    camera.aspect = container.clientWidth / container.clientHeight;
+                    camera.updateProjectionMatrix();
+                    renderer.setSize(container.clientWidth, container.clientHeight);
+                }
+                
+                window.addEventListener('resize', onPhilosophyCanvasResize, false);
+                onPhilosophyCanvasResize();
+                animatePhilosophyModel();
+            }
+
+
+            // --- Header and Hero Animations ---
+            gsap.set(header, { yPercent: -100, autoAlpha: 0 });
+
+            const heroTransitionTl = gsap.timeline({
+                scrollTrigger: {
+                    trigger: '#hero',
+                    start: 'bottom top',
+                    end: 'bottom top',
+                    scrub: true,
+                    onEnter: () => gsap.to(header, {yPercent: 0, autoAlpha: 1, duration: 0.8, ease: 'power3.out'}),
+                    onLeaveBack: () => gsap.to(header, {yPercent: -100, autoAlpha: 0, duration: 0.8, ease: 'power3.in'}),
+                }
+            });
+            
+            header.addEventListener('mousemove', e => {
+                const rect = header.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+
+                const moveX = gsap.utils.mapRange(0, rect.width, -10, 10)(x);
+                const moveY = gsap.utils.mapRange(0, rect.height, -5, 5)(y);
+
+                gsap.to(headerInner, {
+                    x: moveX,
+                    y: moveY,
+                    duration: 0.5,
+                    ease: 'power3.out'
+                });
+            });
+
+            header.addEventListener('mouseleave', () => {
+                gsap.to(headerInner, {
+                    x: 0,
+                    y: 0,
+                    duration: 0.5,
+                    ease: 'elastic.out(1, 0.3)'
+                });
+            });
+            
+            // --- Animate Headlines on Scroll ---
+            document.querySelectorAll('[data-glitch-scroll]').forEach(el => {
+                gsap.from(el, {
+                    y: 30,
+                    autoAlpha: 0,
+                    duration: 1,
+                    ease: 'power3.out',
+                    scrollTrigger: {
+                        trigger: el,
+                        start: 'top 90%',
+                        toggleActions: 'play none none reverse'
+                    }
+                });
+            });
+
+            // --- Slide Up Animation ---
+            document.querySelectorAll('[data-slide-up]').forEach(el => {
+                gsap.from(el, {
+                    y: 100,
+                    autoAlpha: 0,
+                    duration: 1,
+                    ease: 'power3.out',
+                    scrollTrigger: {
+                        trigger: el,
+                        start: 'top 85%',
+                        toggleActions: 'play none none reverse'
+                    }
+                });
+            });
+            
+            // --- Interactive Arrow Grid ---
+            const arrowGrid = document.getElementById('arrow-grid');
+            const arrowCount = 40; // 4 rows of 10 on desktop
+            for (let i = 0; i < arrowCount; i++) {
+                arrowGrid.innerHTML += `<div class="arrow text-text-secondary text-3xl transition-all duration-300 flex justify-center items-center"><span class="material-icons-sharp">arrow_upward</span></div>`;
+            }
+            const arrows = arrowGrid.querySelectorAll('.arrow');
+            arrowGrid.addEventListener('mousemove', e => {
+                const rect = arrowGrid.getBoundingClientRect();
+                const mouseX = e.clientX - rect.left; const mouseY = e.clientY - rect.top;
+                arrows.forEach(arrow => {
+                    const arrowRect = arrow.getBoundingClientRect();
+                    const arrowX = arrowRect.left - rect.left + arrowRect.width / 2;
+                    const arrowY = arrowRect.top - rect.top + arrowRect.height / 2;
+                    const distance = Math.sqrt(Math.pow(mouseX - arrowX, 2) + Math.pow(mouseY - arrowY, 2));
+                    const angle = Math.atan2(mouseY - arrowY, mouseX - arrowX) * (180 / Math.PI) + 90;
+                    const scale = gsap.utils.mapRange(0, 300, 1.5, 1, distance);
+                    const opacity = gsap.utils.mapRange(0, 300, 1, 0.2, distance);
+                    gsap.to(arrow, { rotation: angle, scale, opacity, color: distance < 100 ? 'var(--secondary-accent)' : 'var(--text-secondary)', duration: 0.4, ease: 'power3.out' });
+                });
+            });
+            arrowGrid.addEventListener('mouseleave', () => {
+                gsap.to(arrows, { rotation: 0, scale: 1, opacity: 1, color: 'var(--text-secondary)', duration: 0.5, ease: 'power3.out', stagger: 0.01 });
+            });
+            
+            // --- Core Competencies Logic ---
+            const competenciesData = [
+                { title: "Attention to Detail", description: "I'm meticulous about every pixel and element, ensuring the final output is polished and professional." },
+                { title: "Creative Problem-Solving", description: "I'm skilled at finding innovative and effective visual solutions to complex communication challenges." },
+                { title: "Visual Storytelling", description: "I'm passionate about telling compelling stories and conveying brand messages through impactful visuals." },
+                { title: "Brand Consistency", description: "I'm dedicated to maintaining a consistent and strong brand identity across all platforms and materials." },
+                { title: "Typography & Color Theory", description: "I'm proficient in using typography and color to create hierarchy, mood, and a cohesive design." },
+                { title: "Time Management", description: "I'm excellent at managing multiple projects and deadlines simultaneously, ensuring timely delivery without compromising quality." },
+                { title: "Adaptability", description: "I'm a quick learner, always eager to adapt to new technologies, design trends, and project requirements." }
+            ];
+            
+            const competenciesInner = document.getElementById('competencies-inner');
+            const competenciesHTML = competenciesData.map(item => `
+                <div class="competency-item">
+                    <h3 class="font-bold text-xl mb-2">${item.title}</h3>
+                    <p class="font-lensgrotesk">${item.description}</p>
+                </div>
+            `).join('');
+            // Duplicate for seamless loop
+            competenciesInner.innerHTML = competenciesHTML + competenciesHTML;
+            competenciesInner.parentElement.style.animation = `continuous-slide ${competenciesData.length * 8}s linear infinite`;
+
+
+            // ===============================================
+            //  PROJECTS SECTION LOGIC & INTERACTIONS
+            // ===============================================
+
+            const projectsData = [
+                {
+                    id: 'graphics-design',
+                    image: 'https://ik.imagekit.io/04vozxryh/Create_a_notext_202507010144.gif?updatedAt=1751313127419',
+                    title: 'Graphics Design',
+                    description: 'Crafting compelling visuals that tell a story and define a brand.'
+                },
+                {
+                    id: 'interactive-web',
+                    image: 'https://ik.imagekit.io/04vozxryh/Create_a_hard_202507010158.gif?updatedAt=1751313632131',
+                    title: 'Interactive Web',
+                    description: 'Building dynamic, user-friendly websites with fluid animations.'
+                },
+                {
+                    id: 'video-editing',
+                    image: 'https://ik.imagekit.io/04vozxryh/Create_a_hard_202507010204.gif?updatedAt=1751313932479',
+                    title: 'Video Editing',
+                    description: 'Transforming footage into polished, engaging narratives.'
+                }
+            ];
+
+            // --- DOM Element References ---
+            const projectsGrid = document.getElementById('projects-grid');
+            
+            // --- Function to Populate Project Cards ---
+            function populateProjectCards() {
+                projectsData.forEach((project) => {
+                    const card = document.createElement('div');
+                    card.className = 'project-card';
+                    card.dataset.projectId = project.id;
+                    card.innerHTML = `
+                        <div class="project-card-blurry-bg" style="background-image: url('${project.image}')"></div>
+                        <div class="project-card-content">
+                            <div class="project-card-image">
+                                <img src="${project.image}" alt="${project.title}" loading="lazy">
+                            </div>
+                            <h3 class="text-4xl font-popfine mt-4 pb-3 mb-3 border-b border-gray-500/50">${project.title}</h3>
+                            <p class="font-lensgrotesk">${project.description}</p>
+                        </div>
+                    `;
+                    projectsGrid.appendChild(card);
+                });
+            }
+            
+            // --- Function to Initialize Card Animations & Interactions ---
+            function initializeCardInteractions() {
+                gsap.from(".project-card", {
+                    y: 50,
+                    opacity: 0,
+                    stagger: 0.2,
+                    duration: 1,
+                    ease: 'power3.out',
+                    onStart: () => gsap.set(".project-card", {visibility: 'visible'}),
+                    scrollTrigger: {
+                        trigger: "#projects-grid",
+                        start: "top 80%",
+                    }
+                });
+
+                projectsGrid.addEventListener('mousemove', (e) => {
+                    const card = e.target.closest('.project-card');
+                    if (card) {
+                        const rect = card.getBoundingClientRect();
+                        const x = e.clientX - rect.left;
+                        const y = e.clientY - rect.top;
+                        
+                        const rotateX = gsap.utils.mapRange(0, rect.height, -10, 10)(y);
+                        const rotateY = gsap.utils.mapRange(0, rect.width, 10, -10)(x);
+
+                        gsap.to(card, {
+                            rotationX: rotateX,
+                            rotationY: rotateY,
+                            duration: 0.4,
+                            ease: 'power2.out'
+                        });
+                    }
+                });
+
+                 projectsGrid.addEventListener('mouseleave', (e) => {
+                    const card = e.target.closest('.project-card');
+                     if(card) {
+                        gsap.to(card, { 
+                            rotationX: 0, 
+                            rotationY: 0, 
+                            duration: 0.6, 
+                            ease: 'elastic.out(1, 0.5)' 
+                        });
+                     }
+                }, true);
+            }
+
+            // --- Right-click protection ---
+            const customAlert = document.getElementById('custom-alert');
+            const customAlertClose = document.getElementById('custom-alert-close');
+
+            document.addEventListener('contextmenu', event => {
+                event.preventDefault();
+                gsap.to(customAlert, { autoAlpha: 1, duration: 0.3, onStart: () => customAlert.style.display = 'block' });
+            });
+
+            customAlertClose.addEventListener('click', () => {
+                gsap.to(customAlert, { autoAlpha: 0, duration: 0.3, onComplete: () => customAlert.style.display = 'none' });
+            });
+
+            // --- Initializations ---
+            populateProjectCards();
+            initializeCardInteractions();
+            initializeGlobalCursorInteractions();
+        });
+    </script>
+</body>
+</html>
