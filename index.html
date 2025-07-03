@@ -228,73 +228,66 @@
         .hero-headline, .hero-element, .project-card, [data-glitch-scroll] { visibility: hidden; }
 
         /* Header */
-        header { 
-            position: fixed; 
-            top: 1rem; 
-            left: 1rem; 
-            right: 1rem;
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
             z-index: 100;
-            will-change: transform;
-        }
-        .header-inner {
-            background: rgba(45, 45, 50, 0.5);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: border-color 0.4s ease;
-            transform-origin: center;
-            padding: 0.75rem 2rem;
-            border-radius: 9999px;
+            padding: 2.5rem 2.5rem; /* Increased padding */
         }
         
-        .nav-link, .nav-link-button {
-            font-family: 'Liria', serif;
-            font-size: 1.2rem;
-            letter-spacing: 0.02em;
-            color: var(--text-primary);
-            transition: color 0.3s ease;
-            position: relative;
-            padding-bottom: 5px;
-        }
-        
-        .nav-link::before, .nav-link-button::before {
-            content: '★';
-            position: absolute;
-            left: -1.2em;
-            top: 50%;
-            transform: translateY(-50%) translateY(-2.5px);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            color: var(--secondary-accent);
-        }
-        
-        .nav-link::after, .nav-link-button::after {
+        header::before {
             content: '';
             position: absolute;
-            width: 0;
-            height: 1px;
-            bottom: 0;
-            left: 0;
-            background-color: var(--secondary-accent);
-            transition: width 0.3s ease;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0) 100%);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            -webkit-mask-image: linear-gradient(to bottom, black 40%, transparent 100%);
+            mask-image: linear-gradient(to bottom, black 40%, transparent 100%);
+            z-index: -1;
         }
 
-        .nav-link:hover, .nav-link-button:hover {
-             color: var(--secondary-accent);
+        .nav-link {
+            font-family: 'PowerGrotesk-Bold', sans-serif;
+            font-size: 1rem;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            transition: color 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
-        .nav-link:hover::before, .nav-link-button:hover::before {
-            opacity: 1;
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: #000;
+            background-color: #ffffff;
+            box-shadow: 0 4px 15px rgba(255,255,255,0.2);
         }
-        .nav-link:hover::after, .nav-link-button:hover::after {
-            width: 100%;
-        }
-        
-        .nav-link-button {
-            border: none;
-            padding-bottom: 5px;
-        }
-        .nav-link-button:hover {
+
+        .lets-talk-btn {
+            font-family: 'PowerGrotesk-Bold', sans-serif;
+            font-size: 1rem;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            color: #fff;
             background-color: transparent;
+            border: 2px solid #fff;
+            padding: 0.5rem 1.5rem;
+            border-radius: 9999px;
+            transition: color 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+            white-space: nowrap;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            box-shadow: 0 0 0 rgba(255,255,255,0);
+        }
+
+        .lets-talk-btn:hover {
+            color: #000;
+            background-color: #fff;
+            box-shadow: 0 4px 15px rgba(255,255,255,0.2);
         }
 
         /* Sections */
@@ -425,15 +418,20 @@
 
 
         /* Core Competencies & Philosophy Sections (Normal Scroll) */
-        #competencies, #philosophy {
+        #competencies {
             height: auto;
-            min-height: 100vh;
             padding-top: 5rem;
             padding-bottom: 5rem;
-        }
-        #competencies {
             overflow: hidden;
         }
+
+        #philosophy {
+            height: auto;
+            min-height: 100vh;
+            padding-top: 0;
+            padding-bottom: 5rem;
+        }
+
         .competencies-marquee {
             display: flex;
             width: max-content;
@@ -762,18 +760,14 @@
 
     <div class="page-wrapper">
         <header>
-             <div id="header-inner" class="header-inner">
-                <div class="container flex justify-between items-center">
-                    <img id="header-logo" src="https://ik.imagekit.io/04vozxryh/LogoW.png?updatedAt=1751144946426" alt="Zaid Ishaad Logo" class="h-6 w-auto">
-                    <nav class="hidden md:flex items-center space-x-8 text-sm uppercase">
-                        <a href="#hero" class="nav-link cursor-target">Home</a>
-                        <a href="#projects" class="nav-link cursor-target">Projects</a>
-                        <a href="#contact" class="nav-link-button cursor-target">Let's Talk</a>
-                    </nav>
-                     <button class="md:hidden text-2xl" id="mobile-menu-btn">
-                        <i class="fas fa-bars"></i>
-                    </button>
-                </div>
+            <div class="container mx-auto flex justify-between items-center">
+                <img id="header-logo" src="https://ik.imagekit.io/04vozxryh/LogoW.png?updatedAt=1751144946426" alt="Zaid Ishaad Logo" class="h-8 w-auto">
+                <nav class="hidden md:flex items-center space-x-2">
+                    <a href="#hero" class="nav-link cursor-target active">HOME</a>
+                    <a href="#projects" class="nav-link cursor-target">PROJECTS</a>
+                    <a href="#" class="nav-link cursor-target">PRICING</a>
+                </nav>
+                <a href="#contact" class="lets-talk-btn cursor-target">LET'S TALK</a>
             </div>
         </header>
 
@@ -1105,10 +1099,14 @@
                         const size = box.getSize(new THREE.Vector3());
                         const center = box.getCenter(new THREE.Vector3());
                         philosophyModel.position.sub(center);
+                        
+                        // Move the model up slightly to prevent cutoff
+                        philosophyModel.position.y += size.y * 0.1;
+
                         const maxDim = Math.max(size.x, size.y, size.z);
                         const fov = philosophyCamera.fov * (Math.PI / 180);
                         let cameraZ = Math.abs(maxDim / 2 / Math.tan(fov / 2));
-                        cameraZ *= 1.5;
+                        cameraZ *= 1.425; // Enlarged by 5%
                         philosophyCamera.position.z = cameraZ;
                         philosophyScene.add(philosophyModel);
                     },
@@ -1126,7 +1124,7 @@
                     heroRenderer.render(heroScene, heroCamera);
                 }
                 if (philosophyRenderer && philosophyModel) {
-                    philosophyModel.rotation.y += 0.003;
+                    philosophyModel.rotation.y += 0.003; // Restored rotation
                     philosophyRenderer.render(philosophyScene, philosophyCamera);
                 }
             }
@@ -1325,32 +1323,50 @@
                 });
             }
 
-            // --- Header Animations ---
+            // --- Header Animations & Nav Logic ---
             const header = document.querySelector('header');
-            const headerInner = document.querySelector('#header-inner');
-            gsap.set(header, { yPercent: -100, autoAlpha: 0 });
-            
-            // Show header after the hero section is passed
+            gsap.set(header, { yPercent: -120, autoAlpha: 0 });
+
             ScrollTrigger.create({
-                trigger: "#competencies",
-                start: "top 80%",
-                end: "bottom top",
-                onEnter: () => gsap.to(header, {yPercent: 0, autoAlpha: 1, duration: 0.8, ease: 'power3.out'}),
-                onLeaveBack: () => gsap.to(header, {yPercent: -100, autoAlpha: 0, duration: 0.8, ease: 'power3.in'}),
-            });
-            
-            header.addEventListener('mousemove', e => {
-                const rect = header.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                const moveX = gsap.utils.mapRange(0, rect.width, -10, 10)(x);
-                const moveY = gsap.utils.mapRange(0, rect.height, -5, 5)(y);
-                gsap.to(headerInner, { x: moveX, y: moveY, duration: 0.5, ease: 'power3.out' });
+                trigger: 'body',
+                start: () => window.innerHeight * 0.7,
+                onEnter: () => {
+                    gsap.to(header, { yPercent: 0, autoAlpha: 1, duration: 0.5, ease: 'power3.out' });
+                },
+                onLeaveBack: () => {
+                    gsap.to(header, { yPercent: -120, autoAlpha: 0, duration: 0.5, ease: 'power3.in' });
+                },
             });
 
-            header.addEventListener('mouseleave', () => {
-                gsap.to(headerInner, { x: 0, y: 0, duration: 0.5, ease: 'elastic.out(1, 0.3)' });
-            });
+            function initHeaderNav() {
+                const navLinks = document.querySelectorAll('header .nav-link');
+                navLinks.forEach(link => {
+                    link.addEventListener('click', (e) => {
+                        if (e.currentTarget.getAttribute('href') === '#') {
+                            e.preventDefault();
+                        }
+                        navLinks.forEach(l => l.classList.remove('active'));
+                        e.currentTarget.classList.add('active');
+                    });
+                });
+
+                gsap.utils.toArray('main > .section').forEach(section => {
+                    ScrollTrigger.create({
+                        trigger: section,
+                        start: 'top center',
+                        end: 'bottom center',
+                        onToggle: self => {
+                            if (self.isActive) {
+                                const targetLink = document.querySelector(`.nav-link[href="#${section.id}"]`);
+                                if (targetLink) {
+                                    navLinks.forEach(l => l.classList.remove('active'));
+                                    targetLink.classList.add('active');
+                                }
+                            }
+                        }
+                    });
+                });
+            }
             
             // --- Interactive Arrow Grid ---
             const arrowGrid = document.getElementById('arrow-grid');
@@ -1472,10 +1488,14 @@
             initHeroScene();
             initPhilosophyScene();
             initHeroInteractions();
+            initHeaderNav();
             populateProjectCards();
             initializeGlobalCursorInteractions();
             onWindowResize(); // Set initial sizes
         });
     </script>
+</body>
+</html>
+
 </body>
 </html>
