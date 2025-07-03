@@ -201,11 +201,32 @@
             z-index: 10000;
             pointer-events: none;
         }
-        .loading-diamond {
-            width: 30px;
-            height: 30px;
+        .loading-logo-container {
+            position: relative;
+            width: 150px;
+            height: 150px;
+        }
+        .loading-logo-base {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        .loading-logo-fill {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             background-color: var(--primary-accent);
-            clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+            -webkit-mask-image: url('https://ik.imagekit.io/04vozxryh/ZILOGOB.png?updatedAt=1751555993020');
+            mask-image: url('https://ik.imagekit.io/04vozxryh/ZILOGOB.png?updatedAt=1751555993020');
+            -webkit-mask-size: contain;
+            mask-size: contain;
+            -webkit-mask-repeat: no-repeat;
+            mask-repeat: no-repeat;
+            -webkit-mask-position: center;
+            mask-position: center;
+            transform: translateY(100%);
         }
         
         /* ========================================
@@ -234,7 +255,7 @@
             left: 0;
             right: 0;
             z-index: 100;
-            padding: 2.5rem 2.5rem; /* Increased padding */
+            padding: 2rem 2.5rem;
         }
         
         header::before {
@@ -251,6 +272,7 @@
 
         .nav-link {
             font-family: 'PowerGrotesk-Bold', sans-serif;
+            font-weight: 400;
             font-size: 1rem;
             letter-spacing: 0.05em;
             text-transform: uppercase;
@@ -270,6 +292,7 @@
 
         .lets-talk-btn {
             font-family: 'PowerGrotesk-Bold', sans-serif;
+            font-weight: 400;
             font-size: 1rem;
             letter-spacing: 0.05em;
             text-transform: uppercase;
@@ -758,10 +781,17 @@
         <div class="cursor-text">OPEN<br>PROJECT</div>
     </div>
 
+    <div class="loading-screen">
+        <div class="loading-logo-container">
+            <img src="https://ik.imagekit.io/04vozxryh/ZILOGOB.png?updatedAt=1751555993020" alt="Loading Logo" class="loading-logo-base">
+            <div class="loading-logo-fill"></div>
+        </div>
+    </div>
+
     <div class="page-wrapper">
         <header>
             <div class="container mx-auto flex justify-between items-center">
-                <img id="header-logo" src="https://ik.imagekit.io/04vozxryh/LogoW.png?updatedAt=1751144946426" alt="Zaid Ishaad Logo" class="h-8 w-auto">
+                <img id="header-logo" src="https://ik.imagekit.io/04vozxryh/ZILOGO.png?updatedAt=1751555993564" alt="Zaid Ishaad Logo" class="h-10 w-auto">
                 <nav class="hidden md:flex items-center space-x-2">
                     <a href="#hero" class="nav-link cursor-target active">HOME</a>
                     <a href="#projects" class="nav-link cursor-target">PROJECTS</a>
@@ -1152,7 +1182,8 @@
 
             // --- Page Load Animation ---
             const loadingScreen = document.querySelector('.loading-screen');
-            const loadingDiamond = document.querySelector('.loading-diamond');
+            const loadingLogoContainer = document.querySelector('.loading-logo-container');
+            const loadingLogoFill = document.querySelector('.loading-logo-fill');
             const pageWrapper = document.querySelector('.page-wrapper');
             
             const loadTl = gsap.timeline({
@@ -1162,30 +1193,42 @@
                 }
             });
 
-            loadTl.to(loadingDiamond, { scale: 1.5, rotation: 45, duration: 0.5, ease: 'power2.inOut' })
-                  .to(loadingDiamond, { scale: 1, rotation: 90, duration: 0.5, ease: 'power2.inOut' })
-                  .to(loadingDiamond, { opacity: 0, scale: 3, duration: 0.5, ease: 'power2.in' }, "+=0.2")
-                  .to(loadingScreen, { opacity: 0, duration: 0.5, onComplete: () => {
-                      if (loadingScreen) {
-                          loadingScreen.style.display = 'none';
-                      }
-                  } }, "-=0.2")
-                  .to(pageWrapper, { opacity: 1, duration: 0.1 }, "-=0.5")
-                  .from('.hero-headline', {
-                      y: '50%',
-                      opacity: 0,
-                      ease: 'power4.out',
-                      duration: 1.5,
-                      onStart: () => gsap.set('.hero-headline', {visibility: 'visible'})
-                  }, "-=0.8")
-                  .from('.hero-element', {
-                      y: 20,
-                      opacity: 0,
-                      stagger: 0.2,
-                      ease: 'power4.out',
-                      duration: 1,
-                      onStart: () => gsap.set('.hero-element', {visibility: 'visible'})
-                  }, "-=1");
+            loadTl.to(loadingLogoFill, {
+                transform: 'translateY(0%)',
+                duration: 2,
+                ease: 'power2.inOut'
+            })
+            .to(loadingLogoContainer, {
+                opacity: 0,
+                scale: 1.2,
+                duration: 0.5,
+                ease: 'power2.in'
+            }, "+=0.2")
+            .to(loadingScreen, { 
+                opacity: 0, 
+                duration: 0.5, 
+                onComplete: () => {
+                    if (loadingScreen) {
+                        loadingScreen.style.display = 'none';
+                    }
+                } 
+            }, "-=0.2")
+            .to(pageWrapper, { opacity: 1, duration: 0.1 }, "-=0.5")
+            .from('.hero-headline', {
+                y: '50%',
+                opacity: 0,
+                ease: 'power4.out',
+                duration: 1.5,
+                onStart: () => gsap.set('.hero-headline', {visibility: 'visible'})
+            }, "-=0.8")
+            .from('.hero-element', {
+                y: 20,
+                opacity: 0,
+                stagger: 0.2,
+                ease: 'power4.out',
+                duration: 1,
+                onStart: () => gsap.set('.hero-element', {visibility: 'visible'})
+            }, "-=1");
                   
             // --- Custom Cursor ---
             const cursor = document.querySelector('.cursor');
@@ -1494,8 +1537,5 @@
             onWindowResize(); // Set initial sizes
         });
     </script>
-</body>
-</html>
-
 </body>
 </html>
