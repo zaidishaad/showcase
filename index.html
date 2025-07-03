@@ -300,8 +300,7 @@
         }
 
         /* Sections */
-        .section { padding: 4rem 1.5rem; }
-        .section-separator { border-bottom: 1px solid var(--border-color); }
+        .section { padding: 1rem 1.5rem; }
         .container { max-width: 1400px; margin: 0 auto; padding: 0 1.5rem; }
 
         /* Hero */
@@ -437,10 +436,49 @@
             width: 300px; /* Smaller width for mobile */
             padding: 1.5rem;
             margin: 0 0.5rem;
-            border: 1px solid var(--border-color);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 1rem;
-            background: rgba(26, 26, 29, 0.5);
+            background: rgba(26, 26, 29, 0.6);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            position: relative;
+            overflow: hidden;
+            transition: background 0.4s ease;
         }
+        .competency-item::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 250%;
+            height: 250%;
+            background: conic-gradient(
+                from 0deg,
+                rgba(192, 249, 132, 0.4), 
+                rgba(67, 49, 255, 0.3),
+                rgba(192, 249, 132, 0.4)
+            );
+            animation: rotate 10s linear infinite;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+        .competency-item:hover::before {
+            opacity: 1;
+        }
+        .competency-item .font-bold {
+            position: relative;
+            z-index: 2;
+        }
+        .competency-item .font-lensgrotesk {
+            position: relative;
+            z-index: 2;
+        }
+        @keyframes rotate {
+            from { transform: translate(-50%, -50%) rotate(0deg); }
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
          @media (min-width: 768px) {
              .competency-item {
                  width: 400px;
@@ -725,7 +763,7 @@
         </header>
 
         <main>
-            <section id="hero" class="hero-section section-separator">
+            <section id="hero" class="hero-section">
                 <canvas id="hero-canvas"></canvas>
                 <div class="hero-content-wrapper">
                     
@@ -767,7 +805,7 @@
                 </div>
             </section>
 
-            <section id="competencies" class="section bg-secondary-background section-separator">
+            <section id="competencies" class="section bg-secondary-background">
                 <div class="container text-center">
                     <h2 class="font-powergrotesk uppercase text-4xl sm:text-6xl md:text-8xl mb-16" data-glitch-scroll>Core Competencies</h2>
                 </div>
@@ -777,7 +815,7 @@
                 </div>
             </section>
             
-            <section id="philosophy" class="section section-separator">
+            <section id="philosophy" class="section">
                 <div class="philosophy-marquees-wrapper">
                     <div class="philosophy-title-marquee">
                         <div class="philosophy-title-marquee-inner">
@@ -827,7 +865,7 @@
                 </div>
             </section>
 
-            <section id="projects" class="section bg-secondary-background section-separator">
+            <section id="projects" class="section bg-secondary-background">
                 <div class="container">
                     <h2 class="font-powergrotesk uppercase text-4xl sm:text-6xl md:text-8xl mb-16 text-center" data-glitch-scroll>Projects</h2>
                      <div id="projects-grid">
@@ -1139,6 +1177,29 @@
                 directionalLight.position.set(5, 10, 7.5);
                 scene.add(directionalLight);
 
+                // Create a canvas for the radial gradient
+                const gradientCanvas = document.createElement('canvas');
+                gradientCanvas.width = 256;
+                gradientCanvas.height = 256;
+                const context = gradientCanvas.getContext('2d');
+                const gradient = context.createRadialGradient(128, 128, 0, 128, 128, 128);
+                gradient.addColorStop(0, '#7EA310');
+                gradient.addColorStop(1, 'rgba(126, 163, 16, 0)');
+                context.fillStyle = gradient;
+                context.fillRect(0, 0, 256, 256);
+
+                const texture = new THREE.CanvasTexture(gradientCanvas);
+                const lightPlaneGeometry = new THREE.PlaneGeometry(10, 10);
+                const lightPlaneMaterial = new THREE.MeshBasicMaterial({
+                    map: texture,
+                    transparent: true,
+                    opacity: 0.5
+                });
+                const lightPlane = new THREE.Mesh(lightPlaneGeometry, lightPlaneMaterial);
+                lightPlane.position.z = -5;
+                scene.add(lightPlane);
+
+
                 const loader = new GLTFLoader();
                 let model;
                 loader.load(
@@ -1155,7 +1216,7 @@
                         const maxDim = Math.max(size.x, size.y, size.z);
                         const fov = camera.fov * (Math.PI / 180);
                         let cameraZ = Math.abs(maxDim / 2 / Math.tan(fov / 2));
-                        cameraZ *= 1.2;
+                        cameraZ *= 1.5;
                         camera.position.z = cameraZ;
                         
                         scene.add(model);
@@ -1187,6 +1248,16 @@
             // --- Header and Hero Animations ---
             gsap.set(header, { yPercent: -100, autoAlpha: 0 });
 
+            gsap.to(['#hero-canvas', '.hero-content-wrapper'], {
+              autoAlpha: 0,
+              scrollTrigger: {
+                trigger: '#hero',
+                start: 'top top',
+                end: '60% top',
+                scrub: true,
+              }
+            });
+            
             const heroTransitionTl = gsap.timeline({
                 scrollTrigger: {
                     trigger: '#hero',
