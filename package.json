@@ -1,0 +1,21 @@
+{
+  "name": "zaid-ishaad-portfolio",
+  "version": "1.0.0",
+  "description": "Digital Creative Portfolio for Zaid Ishaad",
+  "author": "Zaid Ishaad",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "gsap": "^3.12.5",
+    "lenis": "^1.0.23",
+    "split-type": "^0.3.4",
+    "three": "^0.128.0"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.1",
+    "vite": "^5.0.0"
+  }
+}
