@@ -96,7 +96,7 @@
             font-weight: normal;
             font-style: normal;
         }
-
+        
         @font-face {
             font-family: 'PowerGrotesk-Bold';
             src: url('https://ik.imagekit.io/04vozxryh/PowerGrotesk-Bold.otf?updatedAt=1751484040064') format('opentype');
@@ -109,9 +109,11 @@
             --secondary-background: #1A1A1D;
             --primary-accent: #0052FF; /* Blue */
             --secondary-accent: #FFD600; /* Yellow */
+            --lime-green: #c0f984;
             --text-primary: #F5F5F5;
             --text-secondary: #A9A9A9;
             --border-color: rgba(255, 255, 255, 0.1);
+            --deep-blue-bg: #0d1a2e;
         }
 
         /* ========================================
@@ -211,13 +213,14 @@
             height: 100%;
             object-fit: contain;
         }
-        .loading-logo-fill {
+        .loading-logo-gradient-overlay {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: var(--primary-accent);
+            background: linear-gradient(90deg, var(--primary-accent), var(--lime-green), var(--primary-accent));
+            background-size: 200% 100%;
             -webkit-mask-image: url('https://ik.imagekit.io/04vozxryh/ZILOGOB.png?updatedAt=1751555993020');
             mask-image: url('https://ik.imagekit.io/04vozxryh/ZILOGOB.png?updatedAt=1751555993020');
             -webkit-mask-size: contain;
@@ -226,13 +229,33 @@
             mask-repeat: no-repeat;
             -webkit-mask-position: center;
             mask-position: center;
-            transform: translateY(100%);
+            animation: pan-gradient 3s linear infinite;
+        }
+        @keyframes pan-gradient {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        .loading-bar-container {
+            width: 150px;
+            height: 2px;
+            background-color: rgba(255, 255, 255, 0.2);
+            margin-top: 1.5rem;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        .loading-bar {
+            width: 0%;
+            height: 100%;
+            background-color: var(--text-primary);
+            border-radius: 2px;
         }
         
         /* ========================================
         PAGE STRUCTURE & ANIMATIONS
         ======================================== */
-        .page-wrapper { opacity: 0; }
+        .page-wrapper { 
+            opacity: 0;
+        }
         
         /* Typography */
         h1, .font-display { font-family: 'Work Sans', sans-serif; font-weight: 900; text-transform: uppercase; }
@@ -245,8 +268,9 @@
         .font-lensgrotesk { font-family: 'LensGrotesk', sans-serif; }
         .font-peghas { font-family: 'Peghas', sans-serif; }
         .font-powergrotesk { font-family: 'PowerGrotesk', sans-serif; }
+        .font-powergrotesk-heavy { font-family: 'PowerGrotesk-Bold', sans-serif; }
         
-        .hero-headline, .hero-element, .project-card, [data-glitch-scroll] { visibility: hidden; }
+        .hero-headline, .hero-element, [data-glitch-scroll] { visibility: hidden; }
 
         /* Header */
         header {
@@ -254,8 +278,17 @@
             top: 0;
             left: 0;
             right: 0;
-            z-index: 100;
+            z-index: 6000; /* High z-index to be on top of everything */
             padding: 2rem 2.5rem;
+            transform: translateY(-120%);
+            opacity: 0;
+            visibility: hidden;
+            transition: transform 0.5s ease-out, opacity 0.5s ease-out, visibility 0.5s;
+        }
+        header.is-visible {
+            transform: translateY(0);
+            opacity: 1;
+            visibility: visible;
         }
         
         header::before {
@@ -329,6 +362,7 @@
             justify-content: center;
             overflow: hidden;
             z-index: 1; /* Hero is the base layer */
+            will-change: transform, opacity, filter; /* Performance hint */
         }
         #hero-canvas {
             position: absolute;
@@ -443,8 +477,7 @@
         /* Core Competencies & Philosophy Sections (Normal Scroll) */
         #competencies {
             height: auto;
-            padding-top: 5rem;
-            padding-bottom: 5rem;
+            padding: 8rem 1.5rem;
             overflow: hidden;
         }
 
@@ -518,88 +551,6 @@
         @keyframes continuous-slide {
             from { transform: translateX(0); }
             to { transform: translateX(-50%); }
-        }
-
-        /* Projects & Contact Sections (Full Height) */
-        #projects, #contact {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-        #projects {
-            padding-bottom: 12rem;
-        }
-
-        #projects-grid {
-            display: grid;
-            grid-template-columns: repeat(1, 1fr);
-            gap: 1.5rem;
-        }
-        @media (min-width: 768px) {
-            #projects-grid {
-                grid-template-columns: repeat(2, 1fr);
-                 gap: 2rem;
-            }
-        }
-        @media (min-width: 1024px) {
-            #projects-grid {
-                grid-template-columns: repeat(3, 1fr);
-            }
-        }
-
-        .project-card {
-            border-radius: 1.5rem;
-            position: relative;
-            overflow: hidden;
-            transition: transform 0.4s ease, box-shadow 0.4s ease;
-            padding: 1.5rem;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            transform-style: preserve-3d; /* For 3D tilt effect */
-            will-change: transform; /* Optimization for transforms */
-        }
-
-        .project-card:hover {
-            transform: translateY(-15px) scale(1.05); /* Enhanced floating effect */
-            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
-        }
-        .project-card-blurry-bg {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background-size: cover;
-            background-position: center;
-            filter: blur(15px) brightness(0.6);
-            transform: scale(1.1);
-            transition: filter 0.4s ease;
-            z-index: 1;
-        }
-        .project-card:hover .project-card-blurry-bg {
-            filter: blur(10px) brightness(1.1); /* Lighten effect on hover */
-        }
-        .project-card-content {
-            position: relative;
-            z-index: 2;
-            color: white;
-            text-align: center;
-        }
-        .project-card-image {
-            width: 100%;
-            aspect-ratio: 1 / 1;
-            border-radius: 1rem;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            margin-bottom: 1.5rem;
-            transition: transform 0.4s ease;
-        }
-        .project-card:hover .project-card-image {
-            transform: scale(1.05);
-        }
-        .project-card-image img {
-            width: 100%; height: 100%;
-            object-fit: cover;
         }
 
         /* Philosophy Section Redesigned */
@@ -731,6 +682,111 @@
             color: black;
         }
         
+        /* PROJECTS WINDOW (MODAL/OVERLAY) */
+        #projects-window {
+            position: fixed;
+            inset: 0;
+            z-index: 5000;
+            background-color: var(--primary-background);
+            overflow-y: auto;
+            visibility: hidden; /* Controlled by GSAP */
+        }
+        #projects-content {
+            padding-top: 160px;
+        }
+
+
+        #projects-bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1; /* Behind project content */
+        }
+        .project-detail-section {
+            padding: 6rem 1.5rem;
+            min-height: 100vh;
+            position: relative;
+            z-index: 1;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .project-detail-section:first-of-type {
+            padding-top: 0;
+        }
+        .project-detail-section:last-of-type {
+            border-bottom: none;
+        }
+        .project-headline {
+            font-size: clamp(8.2rem, 26vw, 20rem);
+            text-transform: uppercase;
+            line-height: 1;
+        }
+        .project-subheadline {
+            font-size: clamp(1.5rem, 4vw, 2.6rem);
+            margin-top: 0.25rem;
+        }
+        .marquee-container {
+            overflow: hidden;
+            position: relative;
+            padding: 4rem 0;
+        }
+        .marquee-container::before, .marquee-container::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            width: 15%;
+            height: 100%;
+            z-index: 2;
+            background: linear-gradient(to right, var(--primary-background), transparent);
+        }
+        .marquee-container::before { left: 0; }
+        .marquee-container::after { right: 0; transform: scaleX(-1); }
+        .marquee-inner {
+            display: flex;
+            width: max-content;
+            will-change: transform; /* Performance optimization */
+        }
+        .posters-marquee .marquee-inner {
+            animation: marquee-left 40s linear infinite;
+        }
+        .logos-marquee .marquee-inner {
+            animation: marquee-right 30s linear infinite;
+        }
+        @keyframes marquee-left {
+            from { transform: translateX(0); }
+            to { transform: translateX(-50%); }
+        }
+        @keyframes marquee-right {
+            from { transform: translateX(-50%); }
+            to { transform: translateX(0); }
+        }
+        .marquee-item {
+            flex-shrink: 0;
+            margin: 0 1rem;
+            width: 300px;
+            height: 400px;
+            background-color: var(--secondary-background);
+            border-radius: 1rem;
+        }
+        .marquee-item.logo {
+            width: 200px;
+            height: 200px;
+        }
+        .marquee-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 1rem;
+        }
+
+        #contact {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
         /* Custom Alert for Right-Click Protection */
         .custom-alert {
             position: fixed;
@@ -782,145 +838,205 @@
     </div>
 
     <div class="loading-screen">
-        <div class="loading-logo-container">
-            <img src="https://ik.imagekit.io/04vozxryh/ZILOGOB.png?updatedAt=1751555993020" alt="Loading Logo" class="loading-logo-base">
-            <div class="loading-logo-fill"></div>
+        <div class="flex flex-col items-center">
+            <div class="loading-logo-container">
+                <img src="https://ik.imagekit.io/04vozxryh/ZILOGOB.png?updatedAt=1751555993020" alt="Loading Logo" class="loading-logo-base">
+                <div class="loading-logo-gradient-overlay"></div>
+            </div>
+            <div class="loading-bar-container">
+                <div id="loading-bar" class="loading-bar"></div>
+            </div>
         </div>
     </div>
 
-    <div class="page-wrapper">
-        <header>
-            <div class="container mx-auto flex justify-between items-center">
-                <img id="header-logo" src="https://ik.imagekit.io/04vozxryh/ZILOGO.png?updatedAt=1751555993564" alt="Zaid Ishaad Logo" class="h-10 w-auto">
-                <nav class="hidden md:flex items-center space-x-2">
-                    <a href="#hero" class="nav-link cursor-target active">HOME</a>
-                    <a href="#projects" class="nav-link cursor-target">PROJECTS</a>
-                    <a href="#" class="nav-link cursor-target">PRICING</a>
-                </nav>
-                <a href="#contact" class="lets-talk-btn cursor-target">LET'S TALK</a>
-            </div>
-        </header>
+    <header id="main-header">
+        <div class="container mx-auto flex justify-between items-center">
+            <img id="header-logo" src="https://ik.imagekit.io/04vozxryh/ZILOGO.png?updatedAt=1751555993564" alt="Zaid Ishaad Logo" class="h-10 w-auto">
+            <nav class="hidden md:flex items-center space-x-2">
+                <a href="#hero" class="nav-link cursor-target active">HOME</a>
+                <a href="#projects" id="projects-nav-link" class="nav-link cursor-target">PROJECTS</a>
+                <a href="#" class="nav-link cursor-target">PRICING</a>
+            </nav>
+            <a href="#contact" class="lets-talk-btn cursor-target">LET'S TALK</a>
+        </div>
+    </header>
 
-        <main>
-            <section id="hero" class="hero-section section">
-                <canvas id="hero-canvas"></canvas>
-                <div class="hero-content-wrapper">
-                    
-                    <div class="main-headline hero-headline">
-                        <div>
-                            <h1 class="hero-title font-vivlrail">ZAID<br>ISHAAD</h1>
-                            <h2 class="hero-subtitle font-vivlrail">THE SHOWCASE</h2>
+    <div id="main-content">
+        <div class="page-wrapper">
+            <main>
+                <section id="hero" class="hero-section section">
+                    <canvas id="hero-canvas"></canvas>
+                    <div class="hero-content-wrapper">
+                        
+                        <div class="main-headline hero-headline">
+                            <div>
+                                <h1 class="hero-title font-vivlrail">ZAID<br>ISHAAD</h1>
+                                <h2 class="hero-subtitle font-vivlrail">THE SHOWCASE</h2>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="top-right-content hero-element">
-                    </div>
-
-                    <div class="bottom-left-content hero-element">
-                         <div class="social-icons flex items-center space-x-6">
-                            <a href="#" class="text-2xl text-text-secondary hover:text-white transition-colors duration-300 cursor-target" data-color="#002060"><i class="fab fa-facebook-f"></i></a>
-                            <a href="#" class="text-2xl text-text-secondary hover:text-white transition-colors duration-300 cursor-target" data-color="#5A0F61"><i class="fab fa-instagram"></i></a>
-                            <a href="#" class="text-2xl text-text-secondary hover:text-white transition-colors duration-300 cursor-target" data-color="#01689C"><i class="fab fa-linkedin-in"></i></a>
-                            <a href="#" class="text-2xl text-text-secondary hover:text-white transition-colors duration-300 cursor-target" data-color="#00AD6F"><i class="fab fa-whatsapp"></i></a>
+                        <div class="top-right-content hero-element">
                         </div>
-                         <a href="https://ik.imagekit.io/04vozxryh/MYCV2.pdf?updatedAt=1751122326346" target="_blank" download="Zaid_Ishaad_CV.pdf" class="my-cv-bar font-vivlrail uppercase tracking-widest text-sm cursor-target">
-                            My CV
-                        </a>
-                    </div>
-                    
-                    <div class="bottom-right-content hero-element">
-                        <img src="https://ik.imagekit.io/04vozxryh/LogoW.png?updatedAt=1751144946426" alt="Zaid Ishaad Logo" class="w-32 h-auto ml-auto mb-4">
-                        <p class="font-lensgrotesk text-lg md:text-xl text-text-secondary max-w-sm">
-                           A passionate digital creative specializing in graphics design, video editing, and crafting interactive web experiences.
-                        </p>
-                    </div>
 
-                    <div class="scroll-prompt hero-element">
-                        <span>Scroll to view</span>
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                          <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-                        </svg>
-                    </div>
-                </div>
-            </section>
-
-            <section id="competencies" class="section bg-secondary-background">
-                <div class="container text-center">
-                    <h2 class="font-powergrotesk uppercase text-4xl sm:text-6xl md:text-8xl mb-16" data-glitch-scroll>Core Competencies</h2>
-                    <div class="competencies-marquee">
-                        <div id="competencies-inner" class="flex">
+                        <div class="bottom-left-content hero-element">
+                             <div class="social-icons flex items-center space-x-6">
+                                <a href="#" class="text-2xl text-text-secondary hover:text-white transition-colors duration-300 cursor-target" data-color="#002060"><i class="fab fa-facebook-f"></i></a>
+                                <a href="#" class="text-2xl text-text-secondary hover:text-white transition-colors duration-300 cursor-target" data-color="#5A0F61"><i class="fab fa-instagram"></i></a>
+                                <a href="#" class="text-2xl text-text-secondary hover:text-white transition-colors duration-300 cursor-target" data-color="#01689C"><i class="fab fa-linkedin-in"></i></a>
+                                <a href="#" class="text-2xl text-text-secondary hover:text-white transition-colors duration-300 cursor-target" data-color="#00AD6F"><i class="fab fa-whatsapp"></i></a>
+                            </div>
+                             <a href="https://ik.imagekit.io/04vozxryh/MYCV2.pdf?updatedAt=1751122326346" target="_blank" download="Zaid_Ishaad_CV.pdf" class="my-cv-bar font-vivlrail uppercase tracking-widest text-sm cursor-target">
+                                My CV
+                            </a>
                         </div>
-                    </div>
-                </div>
-            </section>
-            
-            <section id="philosophy" class="section">
-                <div class="philosophy-marquees-wrapper">
-                    <div class="philosophy-title-marquee">
-                        <div class="philosophy-title-marquee-inner">
-                            <h2 class="font-peghas">From Idea to Impact •&nbsp;</h2>
-                            <h2 class="font-peghas">From Idea to Impact •&nbsp;</h2>
-                            <h2 class="font-peghas">From Idea to Impact •&nbsp;</h2>
-                            <h2 class="font-peghas">From Idea to Impact •&nbsp;</h2>
-                            <h2 class="font-peghas">From Idea to Impact •&nbsp;</h2>
-                            <!-- Duplicate for seamless loop -->
-                            <h2 class="font-peghas">From Idea to Impact •&nbsp;</h2>
-                            <h2 class="font-peghas">From Idea to Impact •&nbsp;</h2>
-                            <h2 class="font-peghas">From Idea to Impact •&nbsp;</h2>
-                            <h2 class="font-peghas">From Idea to Impact •&nbsp;</h2>
-                            <h2 class="font-peghas">From Idea to Impact •&nbsp;</h2>
-                        </div>
-                    </div>
-                    <div class="philosophy-subtitle-marquee">
-                        <div class="philosophy-subtitle-marquee-inner">
-                            <h3>WELCOME TO ZAID'S SHOWCASE •&nbsp;</h3>
-                            <h3>WELCOME TO ZAID'S SHOWCASE •&nbsp;</h3>
-                            <h3>WELCOME TO ZAID'S SHOWCASE •&nbsp;</h3>
-                            <h3>WELCOME TO ZAID'S SHOWCASE •&nbsp;</h3>
-                            <!-- Duplicate for seamless loop -->
-                            <h3>WELCOME TO ZAID'S SHOWCASE •&nbsp;</h3>
-                            <h3>WELCOME TO ZAID'S SHOWCASE •&nbsp;</h3>
-                            <h3>WELCOME TO ZAID'S SHOWCASE •&nbsp;</h3>
-                            <h3>WELCOME TO ZAID'S SHOWCASE •&nbsp;</h3>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="philosophy-canvas-container">
-                    <canvas id="philosophy-canvas"></canvas>
-                </div>
-                <div class="philosophy-bottom-content">
-                    <div class="philosophy-description-grid">
-                        <p class="philosophy-description left">
-                            My process is rooted in a deep understanding<br>of your goals. I analyze your needs and<br>develop a clear strategy.
-                        </p>
-                        <div class="flex flex-col items-end">
-                            <p class="philosophy-description right">
-                                This ensures the final product<br>is not just beautiful, but highly effective<br>and purpose-driven.
+                        
+                        <div class="bottom-right-content hero-element">
+                            <img src="https://ik.imagekit.io/04vozxryh/ZILOGO.png?updatedAt=1751555993564" alt="Zaid Ishaad Logo" class="w-48 h-auto ml-auto mb-4">
+                            <p class="font-lensgrotesk text-lg md:text-xl text-text-secondary max-w-sm">
+                               A passionate digital creative specializing in graphics design, video editing, and crafting interactive web experiences.
                             </p>
-                            <button class="book-project-bar cursor-target">BOOK A PROJECT</button>
+                        </div>
+
+                        <div class="scroll-prompt hero-element">
+                            <span>Scroll to view</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                              <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                            </svg>
                         </div>
                     </div>
-                </div>
-            </section>
+                </section>
 
-            <section id="projects" class="section bg-secondary-background">
-                <div class="container">
-                    <h2 class="font-powergrotesk uppercase text-4xl sm:text-6xl md:text-8xl mb-16 text-center" data-glitch-scroll>Projects</h2>
-                     <div id="projects-grid">
+                <section id="competencies" class="section bg-secondary-background">
+                    <div class="container mx-auto text-center">
+                        <h2 class="font-powergrotesk uppercase text-4xl sm:text-6xl md:text-8xl mb-16" data-glitch-scroll>Core Competencies</h2>
+                        <div class="competencies-marquee">
+                            <div id="competencies-inner" class="flex">
+                            </div>
                         </div>
-                </div>
-            </section>
-
-             <section id="contact" class="section text-center">
-                <div class="container">
-                    <h2 class="font-sagegrotesk text-5xl sm:text-7xl md:text-9xl" data-glitch-scroll>LET'S CREATE TOGETHER</h2>
-                    <a href="mailto:contact@zaadishaad.com" class="font-mono text-lg md:text-2xl mt-8 inline-block cursor-target text-secondary-accent hover:text-white transition-colors" data-glitch-scroll>contact@zaadishaad.com</a>
-                </div>
-                <div id="arrow-grid" class="mt-12 md:mt-20 container grid grid-cols-5 sm:grid-cols-10 gap-2">
                     </div>
-            </section>
-        </main>
+                </section>
+                
+                <section id="philosophy" class="section">
+                    <div class="philosophy-marquees-wrapper">
+                        <div class="philosophy-title-marquee">
+                            <div class="philosophy-title-marquee-inner">
+                                <h2 class="font-peghas">From Idea to Impact •&nbsp;</h2>
+                                <h2 class="font-peghas">From Idea to Impact •&nbsp;</h2>
+                                <h2 class="font-peghas">From Idea to Impact •&nbsp;</h2>
+                                <h2 class="font-peghas">From Idea to Impact •&nbsp;</h2>
+                                <h2 class="font-peghas">From Idea to Impact •&nbsp;</h2>
+                                <h2 class="font-peghas">From Idea to Impact •&nbsp;</h2>
+                                <h2 class="font-peghas">From Idea to Impact •&nbsp;</h2>
+                                <h2 class="font-peghas">From Idea to Impact •&nbsp;</h2>
+                                <h2 class="font-peghas">From Idea to Impact •&nbsp;</h2>
+                                <h2 class="font-peghas">From Idea to Impact •&nbsp;</h2>
+                            </div>
+                        </div>
+                        <div class="philosophy-subtitle-marquee">
+                            <div class="philosophy-subtitle-marquee-inner">
+                                <h3>WELCOME TO ZAID'S SHOWCASE •&nbsp;</h3>
+                                <h3>WELCOME TO ZAID'S SHOWCASE •&nbsp;</h3>
+                                <h3>WELCOME TO ZAID'S SHOWCASE •&nbsp;</h3>
+                                <h3>WELCOME TO ZAID'S SHOWCASE •&nbsp;</h3>
+                                <h3>WELCOME TO ZAID'S SHOWCASE •&nbsp;</h3>
+                                <h3>WELCOME TO ZAID'S SHOWCASE •&nbsp;</h3>
+                                <h3>WELCOME TO ZAID'S SHOWCASE •&nbsp;</h3>
+                                <h3>WELCOME TO ZAID'S SHOWCASE •&nbsp;</h3>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="philosophy-canvas-container">
+                        <canvas id="philosophy-canvas"></canvas>
+                    </div>
+                    <div class="philosophy-bottom-content">
+                        <div class="philosophy-description-grid">
+                            <p class="philosophy-description left">
+                                My process is rooted in a deep understanding<br>of your goals. I analyze your needs and<br>develop a clear strategy.
+                            </p>
+                            <div class="flex flex-col items-end">
+                                <p class="philosophy-description right">
+                                    This ensures the final product<br>is not just beautiful, but highly effective<br>and purpose-driven.
+                                </p>
+                                <button class="book-project-bar cursor-target">BOOK A PROJECT</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                 <section id="contact" class="section text-center">
+                    <div class="container">
+                        <h2 class="font-sagegrotesk text-5xl sm:text-7xl md:text-9xl" data-glitch-scroll>LET'S CREATE TOGETHER</h2>
+                        <a href="mailto:contact@zaadishaad.com" class="font-mono text-lg md:text-2xl mt-8 inline-block cursor-target text-secondary-accent hover:text-white transition-colors" data-glitch-scroll>contact@zaadishaad.com</a>
+                    </div>
+                    <div id="arrow-grid" class="mt-12 md:mt-20 container grid grid-cols-5 sm:grid-cols-10 gap-2">
+                        </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <!-- Projects Window/Overlay -->
+    <div id="projects-window">
+        <canvas id="projects-bg-canvas"></canvas>
+        <div id="projects-content">
+            <!-- Graphics Design Section -->
+            <div class="project-detail-section" id="graphics-design">
+                <div class="container mx-auto text-left">
+                    <h2 class="font-peghas project-headline">Chromacraft</h2>
+                    <p class="font-powergrotesk-heavy project-subheadline text-text-secondary">Visual Craftsmanship & Brand Imagery</p>
+                    <p class="font-halogrotesk text-lg max-w-3xl text-text-secondary mt-8 project-description">
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis ipsum suspendisse ultrices gravida. Risus commodo viverra maecenas accumsan lacus vel facilisis.
+                    </p>
+                </div>
+                
+                <div class="marquee-container posters-marquee mt-16">
+                    <div class="marquee-inner"></div>
+                </div>
+                
+                <div class="container mx-auto mt-16">
+                     <h3 class="font-powergrotesk-heavy text-4xl md:text-5xl text-center mb-8">LOGOS</h3>
+                </div>
+
+                <div class="marquee-container logos-marquee">
+                    <div class="marquee-inner"></div>
+                </div>
+
+                <div class="container mx-auto mt-24 grid md:grid-cols-2 gap-12 items-center">
+                     <div>
+                        <h3 class="font-powergrotesk-heavy text-4xl md:text-5xl mb-6">WHY CHOOSE ME?</h3>
+                        <ul class="space-y-4">
+                            <li class="flex items-center"><span class="material-icons-sharp text-secondary-accent mr-4">check_circle</span><span class="font-halogrotesk text-xl">CREATIVE & ORIGINAL</span></li>
+                            <li class="flex items-center"><span class="material-icons-sharp text-secondary-accent mr-4">check_circle</span><span class="font-halogrotesk text-xl">DETAIL-ORIENTED</span></li>
+                            <li class="flex items-center"><span class="material-icons-sharp text-secondary-accent mr-4">check_circle</span><span class="font-halogrotesk text-xl">FAST & RELIABLE</span></li>
+                            <li class="flex items-center"><span class="material-icons-sharp text-secondary-accent mr-4">check_circle</span><span class="font-halogrotesk text-xl">VERSATILE EXPERTISE</span></li>
+                            <li class="flex items-center"><span class="material-icons-sharp text-secondary-accent mr-4">check_circle</span><span class="font-halogrotesk text-xl">CLIENT-FOCUSED</span></li>
+                        </ul>
+                     </div>
+                     <p class="font-instrument-serif text-3xl md:text-4xl italic text-right leading-relaxed">
+                         "In a world full of noise, design is the art of being heard without speaking."
+                     </p>
+                </div>
+            </div>
+            
+            <!-- Interactive Web Design Section -->
+            <div class="project-detail-section" id="interactive-web">
+                 <div class="container mx-auto text-left">
+                    <h2 class="font-peghas project-headline">NexSense</h2>
+                    <p class="font-powergrotesk-heavy project-subheadline text-text-secondary">Seamless Navigation & Immersive Interfaces</p>
+                    <p class="font-halogrotesk text-lg max-w-3xl text-text-secondary mt-8 project-description">Content for this section will be uploaded later.</p>
+                </div>
+            </div>
+            
+            <!-- Video Editing Section -->
+            <div class="project-detail-section" id="video-editing">
+                 <div class="container mx-auto text-left">
+                    <h2 class="font-peghas project-headline">TrimShift</h2>
+                    <p class="font-powergrotesk-heavy project-subheadline text-text-secondary">Dynamic Sequencing & Seamless Transitions</p>
+                    <p class="font-halogrotesk text-lg max-w-3xl text-text-secondary mt-8 project-description">Content for this section will be uploaded later.</p>
+                </div>
+            </div>
+        </div>
     </div>
     
     <script type="x-shader/x-vertex" id="vertexShader">
@@ -957,7 +1073,6 @@
         }
         
         // God Rays / Volumetric Light
-        // OPTIMIZATION: Reduced sample count from 25 to 12 for better performance.
         const int NUM_SAMPLES = 12;
         float god_rays(vec2 st, vec2 light_pos) {
             float illumination = 0.0;
@@ -1016,7 +1131,43 @@
             gl_FragColor = vec4(final_color, 1.0);
         }
     </script>
+    
+    <script type="x-shader/x-fragment" id="projects-bg-shader">
+        uniform vec2 u_resolution;
+        uniform float u_time;
 
+        float noise(vec2 st) {
+            vec2 i = floor(st);
+            vec2 f = fract(st);
+            float a = fract(sin(dot(i, vec2(12.9898, 78.233))) * 43758.5453);
+            float b = fract(sin(dot(i + vec2(1.0, 0.0), vec2(12.9898, 78.233))) * 43758.5453);
+            float c = fract(sin(dot(i + vec2(0.0, 1.0), vec2(12.9898, 78.233))) * 43758.5453);
+            float d = fract(sin(dot(i + vec2(1.0, 1.0), vec2(12.9898, 78.233))) * 43758.5453);
+            vec2 u = f * f * (3.0 - 2.0 * f);
+            return mix(a, b, u.x) + (c - a) * u.y * (1.0 - u.x) + (d - b) * u.x * u.y;
+        }
+
+        void main() {
+            vec2 st = gl_FragCoord.xy / u_resolution.xy;
+            float aspect = u_resolution.x / u_resolution.y;
+            st.x *= aspect;
+            
+            vec2 center = vec2(0.5 * aspect, 0.5);
+            float dist = distance(st, center);
+            
+            // Slower pulse effect
+            float pulse = sin(u_time * 0.2) * 0.5 + 0.5;
+            
+            float gradient = smoothstep(0.7, 0.1, dist * (1.2 - pulse * 0.5));
+            
+            float n = noise(st * 4.0 + u_time * 0.1) * 0.2;
+            
+            vec3 deep_blue = vec3(0.05, 0.1, 0.2); 
+            vec3 color = deep_blue * gradient + n * 0.05;
+
+            gl_FragColor = vec4(color, 1.0);
+        }
+    </script>
 
     <script type="module">
         import * as THREE from 'three';
@@ -1026,14 +1177,19 @@
             gsap.registerPlugin(ScrollTrigger);
             
             // --- Global Animation and Rendering Setup ---
-            const lenis = new Lenis({ lerp: 0.08, wheelMultiplier: 0.7 });
+            const mainLenis = new Lenis();
             const clock = new THREE.Clock();
             
-            // --- Hero Scene Variables ---
+            // --- Scene Variables & Performance Flags ---
             let heroScene, heroCamera, heroRenderer, heroUniforms;
-            
-            // --- Philosophy Scene Variables ---
             let philosophyScene, philosophyCamera, philosophyRenderer, philosophyModel, philosophyContainer;
+            let projectsScene, projectsCamera, projectsRenderer, projectsUniforms;
+            let projectsWindowScroller; // Will be initialized later
+            
+            let isHeroVisible = true;
+            let isPhilosophyVisible = false;
+            let isProjectsVisible = false;
+            let projectsInitialized = false;
 
             // --- Initialize Hero Scene ---
             function initHeroScene() {
@@ -1044,7 +1200,8 @@
                 heroCamera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
                 heroRenderer = new THREE.WebGLRenderer({ 
                     canvas: heroCanvas,
-                    powerPreference: "high-performance" // Performance optimization
+                    powerPreference: "high-performance",
+                    antialias: false
                 });
 
                 heroUniforms = {
@@ -1076,9 +1233,9 @@
                 philosophyRenderer = new THREE.WebGLRenderer({ 
                     canvas: philosophyCanvas, 
                     alpha: true,
-                    powerPreference: "high-performance" // Performance optimization
+                    powerPreference: "high-performance"
                 });
-                philosophyRenderer.setPixelRatio(window.devicePixelRatio);
+                philosophyRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
                 const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
                 philosophyScene.add(ambientLight);
@@ -1086,7 +1243,6 @@
                 directionalLight.position.set(5, 10, 7.5);
                 philosophyScene.add(directionalLight);
 
-                // --- Ambient glowing circle effect behind the model ---
                 const glowColor = '#035259';
                 const glowGeometry = new THREE.CircleGeometry(5, 64);
                 const glowMaterial = new THREE.ShaderMaterial({
@@ -1119,126 +1275,85 @@
                 glowMesh.scale.set(1.5, 1.5, 1.5);
                 philosophyScene.add(glowMesh);
 
-
                 const loader = new GLTFLoader();
-                
-                // Add timeout and retry mechanism for GLTF loading
-                let loadAttempts = 0;
-                const maxAttempts = 3;
-                const modelUrl = 'https://ik.imagekit.io/04vozxryh/Create_a_high_resolut_0630162924_texture.glb?updatedAt=1751301047399';
-                
-                function loadModelWithRetry() {
-                    loadAttempts++;
-                    
-                    // Create a timeout promise
-                    const timeout = new Promise((_, reject) => {
-                        setTimeout(() => reject(new Error('Model loading timeout')), 10000);
-                    });
-                    
-                    // Create loader promise
-                    const loadPromise = new Promise((resolve, reject) => {
-                        loader.load(
-                            modelUrl,
-                            resolve,
-                            undefined,
-                            reject
-                        );
-                    });
-                    
-                    Promise.race([loadPromise, timeout])
-                        .then(function (gltf) {
-                            try {
-                                // Validate the loaded model
-                                if (!gltf || !gltf.scene) {
-                                    throw new Error('Invalid GLTF model structure');
-                                }
-                                
-                                philosophyModel = gltf.scene;
-                                
-                                // Sanitize and validate model properties
-                                const box = new THREE.Box3().setFromObject(philosophyModel);
-                                const size = box.getSize(new THREE.Vector3());
-                                const center = box.getCenter(new THREE.Vector3());
-                                
-                                // Validate dimensions to prevent extreme values
-                                if (size.x > 1000 || size.y > 1000 || size.z > 1000) {
-                                    console.warn('Model dimensions are unusually large, scaling down');
-                                    philosophyModel.scale.setScalar(0.1);
-                                }
-                                
-                                philosophyModel.position.sub(center);
-                                
-                                // Move the model up slightly to prevent cutoff
-                                philosophyModel.position.y += size.y * 0.1;
-
-                                const maxDim = Math.max(size.x, size.y, size.z);
-                                const fov = philosophyCamera.fov * (Math.PI / 180);
-                                let cameraZ = Math.abs(maxDim / 2 / Math.tan(fov / 2));
-                                cameraZ *= 1.425; // Enlarged by 5%
-                                
-                                // Clamp camera position to reasonable bounds
-                                cameraZ = Math.max(1, Math.min(cameraZ, 100));
-                                philosophyCamera.position.z = cameraZ;
-                                
-                                philosophyScene.add(philosophyModel);
-                                console.log('3D model loaded successfully');
-                            } catch (processingError) {
-                                console.error('Error processing GLTF model:', processingError);
-                                createFallbackGeometry();
-                            }
-                        })
-                        .catch(function (error) {
-                            console.error(`Model loading attempt ${loadAttempts} failed:`, error);
-                            
-                            if (loadAttempts < maxAttempts) {
-                                console.log(`Retrying model load (attempt ${loadAttempts + 1}/${maxAttempts})...`);
-                                setTimeout(loadModelWithRetry, 2000);
-                            } else {
-                                console.warn('All model loading attempts failed, using fallback geometry');
-                                createFallbackGeometry();
-                            }
-                        });
-                }
-                
-                // Fallback geometry in case model loading fails
-                function createFallbackGeometry() {
-                    const fallbackGeometry = new THREE.SphereGeometry(2, 32, 32);
-                    const fallbackMaterial = new THREE.MeshPhongMaterial({ 
-                        color: 0x4331FF,
-                        shininess: 100,
-                        transparent: true,
-                        opacity: 0.8
-                    });
-                    philosophyModel = new THREE.Mesh(fallbackGeometry, fallbackMaterial);
-                    philosophyModel.position.set(0, 0, 0);
-                    philosophyCamera.position.z = 8;
-                    philosophyScene.add(philosophyModel);
-                    console.log('Fallback geometry created');
-                }
-                
-                // Start the loading process
-                loadModelWithRetry();
+                loader.load(
+                    'https://ik.imagekit.io/04vozxryh/Create_a_high_resolut_0630162924_texture.glb?updatedAt=1751301047399',
+                    (gltf) => {
+                        philosophyModel = gltf.scene;
+                        const box = new THREE.Box3().setFromObject(philosophyModel);
+                        const size = box.getSize(new THREE.Vector3());
+                        const center = box.getCenter(new THREE.Vector3());
+                        philosophyModel.position.sub(center);
+                        philosophyModel.position.y += size.y * 0.1;
+                        const maxDim = Math.max(size.x, size.y, size.z);
+                        const fov = philosophyCamera.fov * (Math.PI / 180);
+                        let cameraZ = Math.abs(maxDim / 2 / Math.tan(fov / 2));
+                        cameraZ *= 1.425;
+                        philosophyCamera.position.z = cameraZ;
+                        philosophyScene.add(philosophyModel);
+                    },
+                    undefined,
+                    (error) => console.error(error)
+                );
             }
             
+            // --- Initialize Projects Scene ---
+            function initProjectsScene() {
+                const canvas = document.getElementById('projects-bg-canvas');
+                if (!canvas) return;
+
+                projectsScene = new THREE.Scene();
+                projectsCamera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+                projectsRenderer = new THREE.WebGLRenderer({ 
+                    canvas: canvas, 
+                    powerPreference: "high-performance",
+                    antialias: false
+                });
+
+                projectsUniforms = {
+                    u_time: { value: 0.0 },
+                    u_resolution: { value: new THREE.Vector2() }
+                };
+
+                const geometry = new THREE.PlaneGeometry(2, 2);
+                const material = new THREE.ShaderMaterial({
+                    uniforms: projectsUniforms,
+                    vertexShader: document.getElementById('vertexShader').textContent,
+                    fragmentShader: document.getElementById('projects-bg-shader').textContent
+                });
+                const mesh = new THREE.Mesh(geometry, material);
+                projectsScene.add(mesh);
+            }
+
             // --- Unified Animation Loop ---
             function masterAnimationLoop(time) {
-                lenis.raf(time * 1000);
+                const timeInMs = time * 1000;
+                mainLenis.raf(timeInMs);
+                
+                if (projectsWindowScroller && isProjectsVisible) {
+                    projectsWindowScroller.raf(timeInMs);
+                }
+
                 const elapsedTime = clock.getElapsedTime();
-                if (heroRenderer && heroUniforms) {
+                
+                if (isHeroVisible && heroRenderer && heroUniforms) {
                     heroUniforms.u_time.value = elapsedTime;
                     heroRenderer.render(heroScene, heroCamera);
                 }
-                if (philosophyRenderer && philosophyModel) {
-                    philosophyModel.rotation.y += 0.003; // Restored rotation
+                if (isPhilosophyVisible && philosophyRenderer && philosophyModel) {
+                    philosophyModel.rotation.y += 0.003;
                     philosophyRenderer.render(philosophyScene, philosophyCamera);
+                }
+                if (isProjectsVisible && projectsRenderer && projectsUniforms) {
+                    projectsUniforms.u_time.value = elapsedTime;
+                    projectsRenderer.render(projectsScene, projectsCamera);
                 }
             }
             gsap.ticker.add(masterAnimationLoop);
-            gsap.ticker.lagSmoothing(0);
-            lenis.on('scroll', ScrollTrigger.update);
+            mainLenis.on('scroll', ScrollTrigger.update);
 
 
-            // --- Window Resize Handler with Debouncing ---
+            // --- Window Resize Handler ---
             function onWindowResize() {
                 const width = window.innerWidth;
                 const height = window.innerHeight;
@@ -1251,86 +1366,73 @@
                     philosophyCamera.updateProjectionMatrix();
                     philosophyRenderer.setSize(philosophyContainer.clientWidth, philosophyContainer.clientHeight);
                 }
-            }
-            
-            // Debounce resize events for better performance
-            let resizeTimeout;
-            function debouncedResize() {
-                clearTimeout(resizeTimeout);
-                resizeTimeout = setTimeout(onWindowResize, 100);
-            }
-            
-            // Use immediate resize for pixel ratio changes but debounce for size changes
-            function handleResize() {
-                // Immediate update for pixel ratio (less expensive)
-                if (heroRenderer) {
-                    heroRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+                if (projectsRenderer) {
+                    projectsRenderer.setSize(width, height);
+                    projectsUniforms.u_resolution.value.set(width, height);
                 }
-                if (philosophyRenderer) {
-                    philosophyRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-                }
-                // Debounced update for size changes
-                debouncedResize();
+                ScrollTrigger.refresh();
             }
-            
-            window.addEventListener('resize', handleResize, false);
+            window.addEventListener('resize', onWindowResize, false);
 
 
             // --- Page Load Animation ---
             const loadingScreen = document.querySelector('.loading-screen');
-            const loadingLogoContainer = document.querySelector('.loading-logo-container');
-            const loadingLogoFill = document.querySelector('.loading-logo-fill');
+            const loadingBar = document.getElementById('loading-bar');
             const pageWrapper = document.querySelector('.page-wrapper');
             
+            gsap.set(pageWrapper, { scale: 1.1, autoAlpha: 0 });
+
             const loadTl = gsap.timeline({
                 onComplete: () => {
                     document.body.classList.add('loaded');
-                    initScrollAnimations();
+                    window.scrollTo(0, 0); 
+                    mainLenis.scrollTo(0, { immediate: true });
+                    setTimeout(() => {
+                        initScrollAnimations();
+                    }, 10);
                 }
             });
 
-            loadTl.to(loadingLogoFill, {
-                transform: 'translateY(0%)',
-                duration: 2,
-                ease: 'power2.inOut'
+            loadTl.to(loadingBar, {
+                width: '100%',
+                duration: 3,
+                ease: 'power1.inOut'
             })
-            .to(loadingLogoContainer, {
-                opacity: 0,
-                scale: 1.2,
-                duration: 0.5,
-                ease: 'power2.in'
-            }, "+=0.2")
             .to(loadingScreen, { 
                 opacity: 0, 
-                duration: 0.5, 
+                duration: 0.8,
+                ease: 'power2.inOut',
                 onComplete: () => {
-                    if (loadingScreen) {
-                        loadingScreen.style.display = 'none';
-                    }
+                    loadingScreen.style.display = 'none';
                 } 
-            }, "-=0.2")
-            .to(pageWrapper, { opacity: 1, duration: 0.1 }, "-=0.5")
+            }, "+=0.2")
+            .to(pageWrapper, { 
+                scale: 1,
+                autoAlpha: 1, 
+                duration: 1.2,
+                ease: 'power2.out'
+            }, "-=0.8")
             .from('.hero-headline', {
                 y: '50%',
-                opacity: 0,
+                autoAlpha: 0,
                 ease: 'power4.out',
                 duration: 1.5,
                 onStart: () => gsap.set('.hero-headline', {visibility: 'visible'})
-            }, "-=0.8")
+            }, "-=0.9")
             .from('.hero-element', {
                 y: 20,
-                opacity: 0,
+                autoAlpha: 0,
                 stagger: 0.2,
                 ease: 'power4.out',
                 duration: 1,
                 onStart: () => gsap.set('.hero-element', {visibility: 'visible'})
-            }, "-=1");
+            }, "<0.5");
                   
             // --- Custom Cursor ---
             const cursor = document.querySelector('.cursor');
             window.addEventListener('mousemove', e => {
                 gsap.to(cursor, { duration: 0.4, x: e.clientX, y: e.clientY, ease: 'power3.out' });
-                if (heroUniforms) {
+                if (isHeroVisible && heroUniforms) {
                     heroUniforms.u_mouse.value.set(e.clientX, e.clientY);
                 }
             });
@@ -1340,16 +1442,10 @@
                     if (e.target.closest('a, button, .cursor-target')) {
                         document.body.classList.add('cursor-hover');
                     }
-                     if (e.target.closest('.project-card')) {
-                        document.body.classList.add('cursor-project-hover');
-                    }
                 });
                 document.body.addEventListener('mouseout', (e) => {
                     if (e.target.closest('a, button, .cursor-target')) {
                         document.body.classList.remove('cursor-hover');
-                    }
-                    if (e.target.closest('.project-card')) {
-                        document.body.classList.remove('cursor-project-hover');
                     }
                 });
             }
@@ -1380,8 +1476,10 @@
 
             // --- Main Scroll-Based Animations ---
             function initScrollAnimations() {
-                // Pin the hero and zoom it in as we scroll
+                const header = document.getElementById('main-header');
+                
                 ScrollTrigger.create({
+                    id: "hero-pin",
                     trigger: ".hero-section",
                     start: "top top",
                     end: "bottom top",
@@ -1390,14 +1488,23 @@
                     scrub: 1,
                     animation: gsap.to(".hero-section", {
                         scale: 1.5,
-                        autoAlpha: 0, // Fades to black (body background)
+                        autoAlpha: 0,
+                        filter: 'blur(20px)',
+                        force3D: true 
                     }),
+                    onUpdate: self => {
+                        if (!isProjectsVisible) {
+                            if (self.progress > 0.7) {
+                                header.classList.add('is-visible');
+                            } else {
+                                header.classList.remove('is-visible');
+                            }
+                        }
+                    }
                 });
 
-                // Animate all other sections
                 const sections = gsap.utils.toArray("main > .section:not(.hero-section)");
                 sections.forEach(section => {
-                    // Animate the section container
                     gsap.from(section, {
                         scrollTrigger: {
                             trigger: section,
@@ -1411,7 +1518,6 @@
                         ease: "power3.out"
                     });
 
-                    // Animate the headline within the section
                     const glitchHeadline = section.querySelector('[data-glitch-scroll]');
                     if (glitchHeadline) {
                         gsap.from(glitchHeadline, {
@@ -1429,8 +1535,24 @@
                     }
                 });
                 
-                // Philosophy Marquee Scroll
                 initPhilosophyMarquee();
+                initSceneVisibilityToggles();
+            }
+            
+            // --- Control scene rendering based on visibility ---
+            function initSceneVisibilityToggles() {
+                ScrollTrigger.create({
+                    trigger: '#hero-canvas',
+                    start: 'top bottom',
+                    end: 'bottom top',
+                    onToggle: self => isHeroVisible = self.isActive,
+                });
+                ScrollTrigger.create({
+                    trigger: '#philosophy-canvas-container',
+                    start: 'top bottom',
+                    end: 'bottom top',
+                    onToggle: self => isPhilosophyVisible = self.isActive,
+                });
             }
 
             // --- Philosophy Marquee Scroll ---
@@ -1462,43 +1584,79 @@
                 });
             }
 
-            // --- Header Animations & Nav Logic ---
-            const header = document.querySelector('header');
-            gsap.set(header, { yPercent: -120, autoAlpha: 0 });
+            // --- Header Nav & Projects Window Logic ---
+            function initNavigation() {
+                const header = document.getElementById('main-header');
+                const allNavLinks = header.querySelectorAll('.nav-link, .lets-talk-btn');
+                const projectsWindow = document.getElementById('projects-window');
+                const projectsContent = document.getElementById('projects-content');
+                const projectsBgCanvas = document.getElementById('projects-bg-canvas');
 
-            ScrollTrigger.create({
-                trigger: 'body',
-                start: () => window.innerHeight * 0.7,
-                onEnter: () => {
-                    gsap.to(header, { yPercent: 0, autoAlpha: 1, duration: 0.5, ease: 'power3.out' });
-                },
-                onLeaveBack: () => {
-                    gsap.to(header, { yPercent: -120, autoAlpha: 0, duration: 0.5, ease: 'power3.in' });
-                },
-            });
-
-            function initHeaderNav() {
-                const navLinks = document.querySelectorAll('header .nav-link');
-                navLinks.forEach(link => {
-                    link.addEventListener('click', (e) => {
-                        if (e.currentTarget.getAttribute('href') === '#') {
-                            e.preventDefault();
+                const projectsTransition = gsap.timeline({
+                    paused: true,
+                    onStart: () => { // Opening
+                        if (!projectsInitialized) {
+                            initProjectsLazy();
                         }
-                        navLinks.forEach(l => l.classList.remove('active'));
-                        e.currentTarget.classList.add('active');
+                        mainLenis.stop();
+                        isProjectsVisible = true;
+                        header.classList.add('is-visible');
+                    },
+                    onReverseComplete: () => { // Closing
+                        mainLenis.start();
+                        isProjectsVisible = false;
+                        if (ScrollTrigger.getById("hero-pin").progress <= 0.7) {
+                            header.classList.remove('is-visible');
+                        }
+                    }
+                });
+
+                projectsTransition
+                    .set(projectsWindow, { autoAlpha: 1 })
+                    .from([projectsContent, projectsBgCanvas], { 
+                        autoAlpha: 0, 
+                        scale: 0.95, 
+                        duration: 0.5, 
+                        ease: 'power2.out'
+                    });
+
+                allNavLinks.forEach(link => {
+                    link.addEventListener('click', e => {
+                        e.preventDefault();
+                        const targetId = link.getAttribute('href');
+
+                        if (targetId === '#projects') {
+                            if (!projectsTransition.isActive()) {
+                                projectsTransition.play();
+                            }
+                        } else {
+                            if (isProjectsVisible) {
+                                projectsTransition.reverse();
+                                setTimeout(() => {
+                                    if (targetId && targetId.startsWith('#')) {
+                                        mainLenis.scrollTo(targetId);
+                                    }
+                                }, 550);
+                            } else {
+                                if (targetId && targetId.startsWith('#')) {
+                                    mainLenis.scrollTo(targetId);
+                                }
+                            }
+                        }
                     });
                 });
 
+                // Active link highlighting for main page scroll
                 gsap.utils.toArray('main > .section').forEach(section => {
                     ScrollTrigger.create({
                         trigger: section,
                         start: 'top center',
                         end: 'bottom center',
                         onToggle: self => {
-                            if (self.isActive) {
-                                const targetLink = document.querySelector(`.nav-link[href="#${section.id}"]`);
+                            if (self.isActive && !isProjectsVisible) {
+                                const targetLink = document.querySelector(`#main-header .nav-link[href="#${section.id}"]`);
+                                document.querySelectorAll('#main-header .nav-link').forEach(l => l.classList.remove('active'));
                                 if (targetLink) {
-                                    navLinks.forEach(l => l.classList.remove('active'));
                                     targetLink.classList.add('active');
                                 }
                             }
@@ -1506,31 +1664,121 @@
                     });
                 });
             }
+
+            // --- LAZY INITIALIZATION FOR PROJECTS ---
+            function initProjectsLazy() {
+                if (projectsInitialized) return;
+                projectsInitialized = true;
+                
+                // Init scroller
+                projectsWindowScroller = new Lenis({
+                    wrapper: document.getElementById('projects-window'),
+                    content: document.getElementById('projects-content')
+                });
+
+                // Init marquee content
+                const posters = ['https://ik.imagekit.io/04vozxryh/002.png?updatedAt=1751801824360', 'https://ik.imagekit.io/04vozxryh/003.png?updatedAt=1751801824419', 'https://ik.imagekit.io/04vozxryh/005.png?updatedAt=1751801824412', 'https://ik.imagekit.io/04vozxryh/006.png?updatedAt=1751801824354', 'https://ik.imagekit.io/04vozxryh/002.png?updatedAt=1751801824360', 'https://ik.imagekit.io/04vozxryh/003.png?updatedAt=1751801824419'];
+                const logos = ['https://ik.imagekit.io/04vozxryh/002.png?updatedAt=1751801824360', 'https://ik.imagekit.io/04vozxryh/003.png?updatedAt=1751801824419', 'https://ik.imagekit.io/04vozxryh/005.png?updatedAt=1751801824412', 'https://ik.imagekit.io/04vozxryh/006.png?updatedAt=1751801824354', 'https://ik.imagekit.io/04vozxryh/002.png?updatedAt=1751801824360', 'https://ik.imagekit.io/04vozxryh/003.png?updatedAt=1751801824419', 'https://ik.imagekit.io/04vozxryh/005.png?updatedAt=1751801824412', 'https://ik.imagekit.io/04vozxryh/006.png?updatedAt=1751801824354'];
+
+                const postersMarquee = document.querySelector('.posters-marquee .marquee-inner');
+                const logosMarquee = document.querySelector('.logos-marquee .marquee-inner');
+
+                if(postersMarquee) {
+                    postersMarquee.innerHTML = posters.map(url => `<div class="marquee-item"><img src="${url}" alt="Poster"></div>`).join('') + posters.map(url => `<div class="marquee-item"><img src="${url}" alt="Poster"></div>`).join('');
+                }
+                if(logosMarquee) {
+                    logosMarquee.innerHTML = logos.map(url => `<div class="marquee-item logo"><img src="${url}" alt="Logo"></div>`).join('') + logos.map(url => `<div class="marquee-item logo"><img src="${url}" alt="Logo"></div>`).join('');
+                }
+
+                // Init project section animations
+                document.querySelectorAll('.project-detail-section').forEach(section => {
+                    const subHeadline = section.querySelector('.project-subheadline');
+                    const description = section.querySelector('.project-description');
+
+                    const tl = gsap.timeline({
+                        scrollTrigger: {
+                            trigger: section,
+                            scroller: "#projects-window",
+                            start: "top 70%",
+                            toggleActions: "play none none reverse"
+                        }
+                    });
+
+                    if (subHeadline) {
+                        tl.from(subHeadline, {
+                            autoAlpha: 0,
+                            y: '-50%',
+                            duration: 0.8,
+                            ease: 'power2.out'
+                        });
+                    }
+
+                    if (description) {
+                        tl.from(description, {
+                            autoAlpha: 0,
+                            y: 20,
+                            duration: 0.8,
+                            ease: 'power2.out'
+                        }, "-=0.6");
+                    }
+                });
+            }
             
             // --- Interactive Arrow Grid ---
             const arrowGrid = document.getElementById('arrow-grid');
             if (arrowGrid) {
                 const arrowCount = 40;
+                let arrowData = [];
+
                 for (let i = 0; i < arrowCount; i++) {
-                    arrowGrid.innerHTML += `<div class="arrow text-text-secondary text-3xl transition-all duration-300 flex justify-center items-center"><span class="material-icons-sharp">arrow_upward</span></div>`;
+                    const arrowEl = document.createElement('div');
+                    arrowEl.className = "arrow text-text-secondary text-3xl transition-all duration-300 flex justify-center items-center";
+                    arrowEl.innerHTML = `<span class="material-icons-sharp">arrow_upward</span>`;
+                    arrowGrid.appendChild(arrowEl);
+
+                    // OPTIMIZATION: Use gsap.quickTo for high-frequency updates
+                    arrowData.push({
+                        el: arrowEl,
+                        quickRotate: gsap.quickTo(arrowEl, "rotation", { duration: 0.4, ease: "power3.out" }),
+                        quickScale: gsap.quickTo(arrowEl, "scale", { duration: 0.4, ease: "power3.out" }),
+                        quickOpacity: gsap.quickTo(arrowEl, "opacity", { duration: 0.4, ease: "power3.out" }),
+                        quickColor: gsap.quickTo(arrowEl, "color", { duration: 0.4, ease: "power3.out" })
+                    });
                 }
-                const arrows = arrowGrid.querySelectorAll('.arrow');
-                arrowGrid.addEventListener('mousemove', e => {
+                
+                const updateArrowsOnMouseMove = e => {
                     const rect = arrowGrid.getBoundingClientRect();
-                    const mouseX = e.clientX - rect.left; const mouseY = e.clientY - rect.top;
-                    arrows.forEach(arrow => {
-                        const arrowRect = arrow.getBoundingClientRect();
+                    const mouseX = e.clientX - rect.left; 
+                    const mouseY = e.clientY - rect.top;
+
+                    arrowData.forEach(data => {
+                        const arrowRect = data.el.getBoundingClientRect();
                         const arrowX = arrowRect.left - rect.left + arrowRect.width / 2;
                         const arrowY = arrowRect.top - rect.top + arrowRect.height / 2;
                         const distance = Math.sqrt(Math.pow(mouseX - arrowX, 2) + Math.pow(mouseY - arrowY, 2));
                         const angle = Math.atan2(mouseY - arrowY, mouseX - arrowX) * (180 / Math.PI) + 90;
                         const scale = gsap.utils.mapRange(0, 300, 1.5, 1, distance);
                         const opacity = gsap.utils.mapRange(0, 300, 1, 0.2, distance);
-                        gsap.to(arrow, { rotation: angle, scale, opacity, color: distance < 100 ? 'var(--secondary-accent)' : 'var(--text-secondary)', duration: 0.4, ease: 'power3.out' });
+                        
+                        data.quickRotate(angle);
+                        data.quickScale(scale);
+                        data.quickOpacity(opacity);
+                        data.quickColor(distance < 100 ? 'var(--secondary-accent)' : 'var(--text-secondary)');
                     });
-                });
+                };
+                
+                arrowGrid.addEventListener('mousemove', updateArrowsOnMouseMove);
+                
                 arrowGrid.addEventListener('mouseleave', () => {
-                    gsap.to(arrows, { rotation: 0, scale: 1, opacity: 1, color: 'var(--text-secondary)', duration: 0.5, ease: 'power3.out', stagger: 0.01 });
+                    gsap.to(".arrow", { 
+                        rotation: 0, 
+                        scale: 1, 
+                        opacity: 1, 
+                        color: 'var(--text-secondary)', 
+                        duration: 0.5, 
+                        ease: 'power3.out', 
+                        stagger: 0.01 
+                    });
                 });
             }
             
@@ -1557,155 +1805,29 @@
                 competenciesInner.parentElement.style.animation = `continuous-slide ${competenciesData.length * 8}s linear infinite`;
             }
 
-            // --- Projects Section Logic ---
-            const projectsData = [
-                { id: 'graphics-design', image: 'https://ik.imagekit.io/04vozxryh/Create_a_notext_202507010144.gif?updatedAt=1751313127419', title: 'Graphics Design', description: 'Crafting compelling visuals that tell a story and define a brand.' },
-                { id: 'interactive-web', image: 'https://ik.imagekit.io/04vozxryh/Create_a_hard_202507010158.gif?updatedAt=1751313632131', title: 'Interactive Web', description: 'Building dynamic, user-friendly websites with fluid animations.' },
-                { id: 'video-editing', image: 'https://ik.imagekit.io/04vozxryh/Create_a_hard_202507010204.gif?updatedAt=1751313932479', title: 'Video Editing', description: 'Transforming footage into polished, engaging narratives.' }
-            ];
-
-            function populateProjectCards() {
-                const projectsGrid = document.getElementById('projects-grid');
-                if (!projectsGrid) return;
-                
-                projectsData.forEach((project) => {
-                    const card = document.createElement('div');
-                    card.className = 'project-card';
-                    card.dataset.projectId = project.id;
-                    
-                    // Create a fallback div in case images fail to load
-                    const fallbackDiv = `
-                        <div class="project-card-fallback" style="background: linear-gradient(135deg, #4331FF, #c0f984); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: white; font-size: 3rem;">
-                            ${project.title.charAt(0)}
-                        </div>
-                    `;
-                    
-                    card.innerHTML = `
-                        <div class="project-card-blurry-bg" style="background-image: url('${project.image}')"></div>
-                        <div class="project-card-content">
-                            <div class="project-card-image">
-                                <img src="${project.image}" alt="${project.title}" loading="lazy" onerror="this.style.display='none'; this.parentNode.innerHTML='${fallbackDiv}';">
-                            </div>
-                            <h3 class="text-4xl font-popfine mt-4 pb-3 mb-3 border-b border-gray-500/50">${project.title}</h3>
-                            <p class="font-lensgrotesk">${project.description}</p>
-                        </div>
-                    `;
-                    
-                    // Validate image loading
-                    const img = card.querySelector('img');
-                    const blurryBg = card.querySelector('.project-card-blurry-bg');
-                    
-                    // Add timeout for image loading
-                    const imageTimeout = setTimeout(() => {
-                        if (!img.complete) {
-                            console.warn(`Image loading timeout for project: ${project.title}`);
-                            img.style.display = 'none';
-                            img.parentNode.innerHTML = fallbackDiv;
-                            blurryBg.style.backgroundImage = 'linear-gradient(135deg, #4331FF, #c0f984)';
-                        }
-                    }, 10000);
-                    
-                    img.onload = () => {
-                        clearTimeout(imageTimeout);
-                        console.log(`Image loaded successfully for project: ${project.title}`);
-                    };
-                    
-                    img.onerror = () => {
-                        clearTimeout(imageTimeout);
-                        console.error(`Failed to load image for project: ${project.title}`);
-                        blurryBg.style.backgroundImage = 'linear-gradient(135deg, #4331FF, #c0f984)';
-                    };
-                    
-                    projectsGrid.appendChild(card);
-                });
-
-                gsap.from(".project-card", {
-                    y: 50, opacity: 0, stagger: 0.2, duration: 1, ease: 'power3.out',
-                    onStart: () => gsap.set(".project-card", {visibility: 'visible'}),
-                    scrollTrigger: { trigger: "#projects-grid", start: "top 80%" }
-                });
-
-                projectsGrid.addEventListener('mousemove', (e) => {
-                    const card = e.target.closest('.project-card');
-                    if (card) {
-                        const rect = card.getBoundingClientRect();
-                        const x = e.clientX - rect.left;
-                        const y = e.clientY - rect.top;
-                        const rotateX = gsap.utils.mapRange(0, rect.height, -10, 10)(y);
-                        const rotateY = gsap.utils.mapRange(0, rect.width, 10, -10)(x);
-                        gsap.to(card, { rotationX: rotateX, rotationY: rotateY, duration: 0.4, ease: 'power2.out' });
-                    }
-                });
-
-                 projectsGrid.addEventListener('mouseleave', (e) => {
-                    const card = e.target.closest('.project-card');
-                     if(card) {
-                        gsap.to(card, { rotationX: 0, rotationY: 0, duration: 0.6, ease: 'elastic.out(1, 0.5)' });
-                     }
-                }, true);
-            }
-
             // --- Right-click protection ---
             const customAlert = document.getElementById('custom-alert');
             const customAlertClose = document.getElementById('custom-alert-close');
-            
-            // Store references to event handlers for cleanup
-            const eventHandlers = {
-                contextmenu: (event) => {
-                    event.preventDefault();
-                    gsap.to(customAlert, { autoAlpha: 1, duration: 0.3, onStart: () => customAlert.style.display = 'block' });
-                },
-                alertClose: () => {
-                    gsap.to(customAlert, { autoAlpha: 0, duration: 0.3, onComplete: () => customAlert.style.display = 'none' });
-                },
-                resize: handleResize
-            };
 
-            document.addEventListener('contextmenu', eventHandlers.contextmenu);
-            customAlertClose.addEventListener('click', eventHandlers.alertClose);
+            document.addEventListener('contextmenu', event => {
+                event.preventDefault();
+                gsap.to(customAlert, { autoAlpha: 1, duration: 0.3, onStart: () => customAlert.style.display = 'block' });
+            });
 
-            // Cleanup function for event listeners
-            function cleanup() {
-                document.removeEventListener('contextmenu', eventHandlers.contextmenu);
-                customAlertClose.removeEventListener('click', eventHandlers.alertClose);
-                window.removeEventListener('resize', eventHandlers.resize);
-                
-                // Cancel GSAP animations to prevent memory leaks
-                gsap.killTweensOf("*");
-                
-                // Dispose of Three.js objects
-                if (heroRenderer) {
-                    heroRenderer.dispose();
-                }
-                if (philosophyRenderer) {
-                    philosophyRenderer.dispose();
-                }
-                if (philosophyModel) {
-                    philosophyModel.traverse((child) => {
-                        if (child.geometry) child.geometry.dispose();
-                        if (child.material) {
-                            if (Array.isArray(child.material)) {
-                                child.material.forEach(material => material.dispose());
-                            } else {
-                                child.material.dispose();
-                            }
-                        }
-                    });
-                }
-            }
-
-            // Add cleanup on page unload
-            window.addEventListener('beforeunload', cleanup);
+            customAlertClose.addEventListener('click', () => {
+                gsap.to(customAlert, { autoAlpha: 0, duration: 0.3, onComplete: () => customAlert.style.display = 'none' });
+            });
 
             // --- Final Initializations ---
             initHeroScene();
             initPhilosophyScene();
+            initProjectsScene();
+            initNavigation();
             initHeroInteractions();
-            initHeaderNav();
-            populateProjectCards();
             initializeGlobalCursorInteractions();
             onWindowResize(); // Set initial sizes
         });
     </script>
 </body>
 </html>
+
