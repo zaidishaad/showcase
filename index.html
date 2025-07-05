@@ -161,6 +161,8 @@
         ======================================== */
         .cursor {
             position: fixed;
+            top: 0;
+            left: 0;
             pointer-events: none;
             z-index: 13000;
             transform: translate(-50%, -50%);
@@ -174,8 +176,7 @@
             height: 12px;
             background-color: white;
             border-radius: 50%;
-            transition: transform 0.4s ease, background-color 0.4s ease;
-            will-change: transform;
+            /* Let GSAP handle all transform and transitions for consistency */
             position: absolute;
         }
         .cursor-text {
@@ -190,19 +191,6 @@
             white-space: nowrap;
             transition: opacity 0.4s ease;
             will-change: opacity;
-        }
-
-        body.cursor-hover .cursor-shape {
-            transform: scale(5);
-        }
-
-        body.cursor-project-hover .cursor-shape {
-            transform: scale(8);
-            background-color: var(--secondary-accent);
-        }
-
-        body.cursor-project-hover .cursor-text {
-            opacity: 1;
         }
 
         /* Hide default system cursor on all interactive elements */
@@ -849,6 +837,8 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            flex-wrap: wrap; /* Allow wrapping on small screens */
+            gap: 1rem; /* Add gap for wrapped items */
             background-color: transparent;
             border-top: 1px solid var(--border-color);
             width: 100%;
@@ -869,7 +859,7 @@
             height: 4px;
             background-color: var(--text-secondary);
             border-radius: 50%;
-            margin: 0 2rem;
+            margin: 0 1rem; /* Adjusted margin for better spacing */
         }
         .footer-secure-text {
             color: #22c55e; /* Green-500 */
@@ -1020,6 +1010,15 @@
         }
         
         /* --- Styles for Anti-Tampering Overlay --- */
+        .intro-text {
+            font-family: 'HaloGrotesk', sans-serif;
+            font-size: 1.2rem;
+            line-height: 1.7;
+            color: var(--text-secondary);
+            margin-bottom: 2.5rem;
+            border-left: 3px solid var(--border-color);
+            padding-left: 1.5rem;
+        }
         #anti-tampering-content .headline {
             font-size: clamp(2rem, 5vw, 2.5rem);
             color: white;
@@ -1051,15 +1050,7 @@
             border-radius: 50%;
             margin-right: 0.5rem;
         }
-        #anti-tampering-content .intro-text {
-            font-family: 'HaloGrotesk', sans-serif;
-            font-size: 1.2rem;
-            line-height: 1.7;
-            color: var(--text-secondary);
-            margin-bottom: 2.5rem;
-            border-left: 3px solid var(--border-color);
-            padding-left: 1.5rem;
-        }
+        
         #anti-tampering-content h2 {
             font-family: 'PowerGrotesk-Bold', sans-serif;
             font-size: clamp(1.2rem, 3vw, 1.5rem);
@@ -1077,6 +1068,76 @@
             color: var(--text-secondary);
             margin-bottom: 1rem;
         }
+
+        /* --- Styles for System Requirements Overlay --- */
+        #system-req-content h1 {
+            font-family: 'PowerGrotesk-Bold', sans-serif;
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            white-space: nowrap; /* Ensures headline stays on one line */
+        }
+        #system-req-content h1 .material-icons-sharp {
+            font-size: 1em;
+            margin-right: 1rem;
+            color: var(--text-secondary);
+        }
+        .requirements-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        .requirements-column {
+            background-color: rgba(26, 26, 29, 0.5); /* Semi-transparent background */
+            backdrop-filter: blur(15px); /* The "glass" effect */
+            -webkit-backdrop-filter: blur(15px); /* For Safari */
+            padding: 2rem;
+            border-radius: 1rem;
+            border: 1px solid var(--border-color);
+        }
+        .requirements-column h2 {
+            font-family: 'PowerGrotesk-Bold', sans-serif;
+            font-size: clamp(1.5rem, 4vw, 2rem);
+            margin-bottom: 1.5rem;
+        }
+        .requirements-column h3 {
+            font-family: 'PowerGrotesk-Bold', sans-serif;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-primary);
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .requirements-column ul {
+            list-style: none;
+            padding-left: 0;
+            font-family: 'HaloGrotesk', sans-serif;
+            font-size: 0.95rem;
+            line-height: 1.7;
+            color: var(--text-secondary);
+        }
+        .requirements-column li strong {
+            color: var(--text-primary);
+            font-weight: normal;
+        }
+
+        @media (max-width: 768px) {
+            .requirements-grid {
+                grid-template-columns: 1fr;
+            }
+            .permanent-footer .footer-dot {
+                display: none; /* Hide dots on small screens */
+            }
+            .permanent-footer {
+                flex-direction: column; /* Stack footer items */
+                gap: 1rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -1087,7 +1148,7 @@
     
     <div class="cursor">
         <div class="cursor-shape"></div>
-        <div class="cursor-text">OPEN<br>PROJECT</div>
+        <div class="cursor-text"></div>
     </div>
 
     <div class="loading-screen">
@@ -1233,6 +1294,8 @@
                     <span class="material-icons-sharp">verified_user</span>
                     <span>ANTI-TAMPERING MECHANISM</span>
                 </a>
+                <div class="footer-dot"></div>
+                <a href="#" class="footer-link cursor-target" id="system-req-link">SYSTEM REQUIREMENTS</a>
             </footer>
         </div>
     </div>
@@ -1308,6 +1371,81 @@
             </div>
         </div>
         <div id="anti-tampering-close-btn" class="custom-overlay-close-btn cursor-target">&times;</div>
+    </div>
+
+    <!-- System Requirements Overlay -->
+    <div id="system-req-overlay" class="custom-overlay">
+        <div id="system-req-content" class="custom-overlay-content">
+            <h1><span class="material-icons-sharp">memory</span>System Requirements</h1>
+            <p class="intro-text">
+                This website utilizes WebGL and high-performance animations. For the best experience, please consider the following recommendations.
+            </p>
+            <div class="requirements-grid">
+                <div class="requirements-column">
+                    <h2>Minimum</h2>
+                    <h3>Operating System</h3>
+                    <ul>
+                        <li>Windows 10</li>
+                        <li>macOS Mojave (10.14)</li>
+                        <li>Modern Linux (e.g. Ubuntu 20.04)</li>
+                    </ul>
+                     <h3>Web Browser</h3>
+                    <ul>
+                        <li>Latest Chrome, Firefox, or Edge</li>
+                        <li>(Hardware Acceleration Enabled)</li>
+                    </ul>
+                    <h3>CPU</h3>
+                    <ul>
+                        <li><strong>Intel:</strong> Core i3 (8th Gen)</li>
+                        <li><strong>AMD:</strong> Ryzen 3 (2nd Gen)</li>
+                        <li><strong>Mac:</strong> Intel Core i5 (2015+) or Apple M1</li>
+                    </ul>
+                    <h3>GPU</h3>
+                    <ul>
+                        <li><strong>NVIDIA:</strong> GeForce GTX 1050</li>
+                        <li><strong>AMD:</strong> Radeon RX 560</li>
+                        <li><strong>Mac:</strong> Integrated GPU (2017+) or Apple M1</li>
+                    </ul>
+                    <h3>RAM</h3>
+                    <ul>
+                        <li><strong>System:</strong> 8 GB</li>
+                        <li><strong>Browser Usage:</strong> ~1 GB</li>
+                    </ul>
+                </div>
+                <div class="requirements-column">
+                    <h2>Recommended</h2>
+                    <h3>Operating System</h3>
+                    <ul>
+                        <li>Windows 11</li>
+                        <li>macOS Monterey (12.0) or newer</li>
+                        <li>Modern Linux (e.g. Ubuntu 22.04)</li>
+                    </ul>
+                    <h3>Web Browser</h3>
+                    <ul>
+                        <li>Latest Chrome, Firefox, or Edge</li>
+                        <li>(Hardware Acceleration Enabled)</li>
+                    </ul>
+                    <h3>CPU</h3>
+                    <ul>
+                        <li><strong>Intel:</strong> Core i5 (10th Gen+)</li>
+                        <li><strong>AMD:</strong> Ryzen 5 (3rd Gen+)</li>
+                        <li><strong>Mac:</strong> Apple M1 or newer</li>
+                    </ul>
+                    <h3>GPU</h3>
+                    <ul>
+                        <li><strong>NVIDIA:</strong> GeForce RTX 2060+</li>
+                        <li><strong>AMD:</strong> Radeon RX 5600 XT+</li>
+                        <li><strong>Mac:</strong> Apple M1 Pro/Max or newer</li>
+                    </ul>
+                    <h3>RAM</h3>
+                    <ul>
+                        <li><strong>System:</strong> 16 GB</li>
+                        <li><strong>Browser Usage:</strong> ~1 GB</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div id="system-req-close-btn" class="custom-overlay-close-btn cursor-target">&times;</div>
     </div>
 
 
@@ -1784,29 +1922,54 @@
                 onStart: () => gsap.set('.hero-element', {visibility: 'visible'})
             }, "<0.5");
                   
-            // --- Custom Cursor ---
-            const cursor = document.querySelector('.cursor');
-            window.addEventListener('mousemove', e => {
-                gsap.to(cursor, { duration: 0.4, x: e.clientX, y: e.clientY, ease: 'power3.out' });
-                if (isHeroVisible && heroUniforms) {
-                    heroUniforms.u_mouse.value.set(e.clientX, e.clientY);
-                }
-            });
-            
-            function initializeGlobalCursorInteractions() {
-                document.body.addEventListener('mouseover', (e) => {
-                    if (e.target.closest('a, button, .cursor-target')) {
-                        document.body.classList.add('cursor-hover');
+            // --- Custom Cursor (FIXED) ---
+            function initCursor() {
+                const cursor = document.querySelector('.cursor');
+                const cursorShape = document.querySelector('.cursor-shape');
+                const targets = gsap.utils.toArray('a, button, .cursor-target');
+
+                // The main cursor element always follows the mouse for smooth tracking
+                window.addEventListener('mousemove', e => {
+                    gsap.to(cursor, {
+                        duration: 0.4,
+                        x: e.clientX,
+                        y: e.clientY,
+                        ease: 'power3.out'
+                    });
+                    if (isHeroVisible && heroUniforms) {
+                        heroUniforms.u_mouse.value.set(e.clientX, e.clientY);
                     }
                 });
-                document.body.addEventListener('mouseout', (e) => {
-                    if (e.target.closest('a, button, .cursor-target')) {
-                        document.body.classList.remove('cursor-hover');
-                    }
+
+                // Handle hover effects on specific targets
+                targets.forEach(target => {
+                    target.addEventListener('mouseenter', () => {
+                        const isProjectLink = target.id === 'projects-nav-link';
+                        const scale = isProjectLink ? 8 : 5;
+
+                        // Animate the visible shape's scale and color
+                        gsap.to(cursorShape, {
+                            duration: 0.3,
+                            scale: scale,
+                            backgroundColor: isProjectLink ? 'var(--secondary-accent)' : 'white',
+                            ease: 'power3.out'
+                        });
+                    });
+
+                    target.addEventListener('mouseleave', () => {
+                        // Reset the shape to its default state
+                        gsap.to(cursorShape, {
+                            duration: 0.3,
+                            scale: 1,
+                            backgroundColor: 'white',
+                            ease: 'power3.out'
+                        });
+                    });
                 });
             }
 
-            // --- Hero-Specific Interactions ---
+
+            // --- Hero-Specific Interactions (for background shader) ---
             function initHeroInteractions() {
                 const socialIcons = document.querySelectorAll('.social-icons a');
                 const socialIconsContainer = document.querySelector('.social-icons');
@@ -2044,6 +2207,7 @@
 
                 setupOverlay('terms-link', 'terms-overlay', 'terms-content', 'terms-close-btn');
                 setupOverlay('anti-tampering-link', 'anti-tampering-overlay', 'anti-tampering-content', 'anti-tampering-close-btn');
+                setupOverlay('system-req-link', 'system-req-overlay', 'system-req-content', 'system-req-close-btn');
 
                 // Active link highlighting for main page scroll
                 gsap.utils.toArray('main > .section').forEach(section => {
@@ -2262,7 +2426,7 @@
             initProjectsScene();
             initNavigation();
             initHeroInteractions();
-            initializeGlobalCursorInteractions();
+            initCursor();
             initSecurityFeatures();
             onWindowResize(); // Set initial sizes
         });
